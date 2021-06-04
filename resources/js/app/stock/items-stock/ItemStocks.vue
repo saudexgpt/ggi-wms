@@ -3,31 +3,31 @@
     <!-- <item-details v-if="page.option== 'view_details'" :item-in-stock="itemInStock" :page="page" /> -->
     <add-new v-if="page.option== 'add_new'" :items-in-stock="items_in_stock" :params="params" :page="page" />
     <edit-item v-if="page.option=='edit_item'" :items-in-stock="items_in_stock" :item-in-stock="itemInStock" :params="params" :page="page" @update="onEditUpdate" />
-    <el-row :gutter="10">
-      <el-col :xs="24" :sm="12" :md="12">
-        <label for="">Select Warehouse</label>
-        <el-select v-model="form.warehouse_index" placeholder="Select Warehouse" class="span" filterable @input="fetchItemStocks">
-          <el-option v-for="(warehouse, index) in warehouses" :key="index" :value="index" :label="warehouse.name" />
-
-        </el-select>
-
-      </el-col>
-      <el-col :xs="24" :sm="12" :md="12">
-        <br>
-        <el-popover
-          placement="right"
-          trigger="click"
-        >
-          <date-range-picker :from="$route.query.from" :to="$route.query.to" :panel="panel" :panels="panels" :submit-title="submitTitle" :future="future" @update="setDateRange" />
-          <el-button id="pick_date" slot="reference" type="success">
-            <i class="el-icon-date" /> Pick Date Range
-          </el-button>
-        </el-popover>
-      </el-col>
-    </el-row>
-    <br>
-
     <div v-if="page.option=='list'">
+      <el-row :gutter="10">
+        <el-col :xs="24" :sm="12" :md="12">
+          <label for="">Select Warehouse</label>
+          <el-select v-model="form.warehouse_index" placeholder="Select Warehouse" class="span" filterable @input="fetchItemStocks">
+            <el-option v-for="(warehouse, index) in warehouses" :key="index" :value="index" :label="warehouse.name" />
+
+          </el-select>
+
+        </el-col>
+        <!-- <el-col :xs="24" :sm="12" :md="12">
+          <br>
+          <el-popover
+            placement="right"
+            trigger="click"
+          >
+            <date-range-picker :from="$route.query.from" :to="$route.query.to" :panel="panel" :panels="panels" :submit-title="submitTitle" :future="future" @update="setDateRange" />
+            <el-button id="pick_date" slot="reference" type="success">
+              <i class="el-icon-date" /> Pick Date Range
+            </el-button>
+          </el-popover>
+        </el-col> -->
+      </el-row>
+      <br>
+
       <el-tabs v-model="activeActivity">
         <el-tab-pane label="UNEXPIRED PRODUCTS" name="unexpired">
           <div class="box-header">
@@ -200,7 +200,7 @@ export default {
           filter: 'Search:',
         },
         // editableColumns:['name', 'category.name', 'sku'],
-        sortable: [/* 'item.name', 'batch_no', 'quantity', 'in_transit', 'supplied', 'balance', 'expiry_date', 'created_at'*/],
+        sortable: ['item.name', 'batch_no', 'expiry_date'/* 'item.name', 'batch_no', 'quantity', 'in_transit', 'supplied', 'balance', 'expiry_date', 'created_at'*/],
         filterable: ['stocker.name', 'item.name', 'batch_no', 'expiry_date', 'created_at'],
       },
       expired_columns: ['item.name', 'batch_no', 'quantity', /* 'destroyed', 'balance', */'expiry_date'],
@@ -221,7 +221,7 @@ export default {
           filter: 'Search:',
         },
         // editableColumns:['name', 'category.name', 'sku'],
-        sortable: [/* 'item.name', 'batch_no', 'quantity', 'in_transit', 'supplied', 'balance', 'expiry_date', 'created_at'*/],
+        sortable: [/* 'item.name', 'batch_no', 'expiry_date', 'quantity', 'in_transit', 'supplied', 'balance', 'expiry_date', 'created_at'*/],
         filterable: ['item.name', 'batch_no', 'quantity', 'destroyed', 'balance', 'expiry_date'],
       },
       page: {
@@ -252,7 +252,7 @@ export default {
     };
   },
 
-  mounted() {
+  created() {
     // this.getWarehouse();
     this.fetchNecessaryParams();
   },
@@ -289,6 +289,7 @@ export default {
     },
     fetchNecessaryParams() {
       const app = this;
+      const loader = necessaryParams.loaderShow();
       necessaryParams.list()
         .then(response => {
           app.params = response.params;
@@ -303,6 +304,7 @@ export default {
             app.form.from = from;
             app.form.to = to;
             app.fetchItemStocks();
+            loader.hide();
           }
           app.product_expiry_date_alert_in_months = response.params.product_expiry_date_alert;
         });
@@ -428,7 +430,9 @@ export default {
           }
         }
         if (j === 'item.name') {
-          return v['item']['name'];
+          if (v['item'] != null) {
+            return v['item']['name'];
+          }
         }
         if (j === 'expiry_date') {
           return parseTime(v['expiry_date']);

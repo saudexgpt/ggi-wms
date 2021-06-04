@@ -21,29 +21,32 @@ class ItemStocksController extends Controller
     public function index(Request $request)
     {
         //
-        $date_from = Carbon::now()->startOfMonth();
-        $date_to = Carbon::now()->endOfMonth();
-        $panel = 'month';
-        if (isset($request->from, $request->to)) {
-            $date_from = date('Y-m-d', strtotime($request->from)) . ' 00:00:00';
-            $date_to = date('Y-m-d', strtotime($request->to)) . ' 23:59:59';
+        // $date_from = Carbon::now()->startOfMonth();
+        // $date_to = Carbon::now()->endOfMonth();
+        // $panel = 'month';
+        // if (isset($request->from, $request->to)) {
+        //     $date_from = date('Y-m-d', strtotime($request->from)) . ' 00:00:00';
+        //     $date_to = date('Y-m-d', strtotime($request->to)) . ' 23:59:59';
 
-            $panel = $request->panel;
-        }
+        //     $panel = $request->panel;
+        // }
         $warehouse_id = $request->warehouse_id;
-        // $items_in_stock = ItemStock::with(['warehouse', 'item', 'subBatches.stocker', 'subBatches.confirmer'])->where('warehouse_id', $warehouse_id)->orderBy('id', 'DESC')->get();
-
         $items_in_stock = ItemStockSubBatch::with(['warehouse', 'item' => function ($q) {
             $q->orderBy('name');
         }, 'stocker', 'confirmer'])->where('warehouse_id', $warehouse_id)->where(function ($q) {
             $q->where('balance', '>', '0');
-            // $q->orWhere('in_transit', '>', '0');
-        })->where('created_at', '>=', $date_from)->where('created_at', '<=', $date_to)->orderBy('expiry_date')->get();
+            $q->orWhere('in_transit', '>', '0');
+        })->orderBy('expiry_date')->get();
 
-        $expired_products = ExpiredProduct::with(['item'])->groupBy(['batch_no'])->where('warehouse_id', $warehouse_id)->where('expiry_date', '>=', $date_from)->where('expiry_date', '<=', $date_to)->select('*', \DB::raw('SUM(quantity) as quantity'))->get();
+        $expired_products = ExpiredProduct::with(['item'])->groupBy(['batch_no'])->where('warehouse_id', $warehouse_id)->select('*', \DB::raw('SUM(quantity) as quantity'))->get();
+        // $items_in_stock = ItemStockSubBatch::with(['warehouse', 'item' => function ($q) {
+        //     $q->orderBy('name');
+        // }, 'stocker', 'confirmer'])->where('warehouse_id', $warehouse_id)->where(function ($q) {
+        //     $q->where('balance', '>', '0');
+        //     // $q->orWhere('in_transit', '>', '0');
+        // })->where('created_at', '>=', $date_from)->where('created_at', '<=', $date_to)->orderBy('expiry_date')->get();
 
-        // $items_in_stock = ItemStock::with(['warehouse', 'item'])->groupBy('item_id')->having('warehouse_id', $warehouse_id)
-        // ->select('*',\DB::raw('SUM(quantity) as total_quantity'))->get();
+        // $expired_products = ExpiredProduct::with(['item'])->groupBy(['batch_no'])->where('warehouse_id', $warehouse_id)->where('expiry_date', '>=', $date_from)->where('expiry_date', '<=', $date_to)->select('*', \DB::raw('SUM(quantity) as quantity'))->get();
         return response()->json(compact('items_in_stock', 'expired_products'));
     }
     public function productBatches(Request $request)
