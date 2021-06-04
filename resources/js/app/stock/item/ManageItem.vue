@@ -18,10 +18,15 @@
         <v-client-table v-model="items" :columns="columns" :options="options">
 
           <div slot="category.name" slot-scope="{row}">
-            {{ row.category.name }}
+            <span v-if="row.category">{{ row.category.name }}</span>
+            <span v-else align="right">Not Set</span>
+          </div>
+          <div slot="volume_per_package" slot-scope="{row}">
+            {{ row.volume_per_package + row.unit_of_measurement }}
           </div>
           <div slot="price.sale_price" slot-scope="{row}">
-            <span align="right">{{ '₦' + Number(row.price.sale_price).toLocaleString() }}</span>
+            <span v-if="row.price != null" align="right">{{ '₦' + Number(row.price.sale_price).toLocaleString() }}</span>
+            <span v-else align="right" class="label label-danger">Not Set</span>
           </div>
           <div slot="action" slot-scope="props">
             <a class="btn btn-primary" @click="item=props.row; selected_row_index=props.index; page.option = 'edit_item'"><i class="fa fa-edit" /> </a>
@@ -56,14 +61,14 @@ export default {
     return {
       categories: [],
       items: [],
-      columns: ['action', 'name', 'category.name', 'package_type', 'quantity_per_carton', 'price.sale_price'],
+      columns: ['action', 'name', 'category.name', 'package_type', 'volume_per_package', 'price.sale_price'],
 
       options: {
         headings: {
           name: 'Name',
           'category.name': 'Category',
           package_type: 'Package Type',
-          quantity_per_carton: 'Quantity Per Carton',
+          volume_per_package: 'Volume per package',
           'price.sale_price': 'Rate',
           // id: 'S/N',
         },

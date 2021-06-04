@@ -90,7 +90,7 @@ export default {
       }
     };
     return {
-      img: 'images/logo.png',
+      img: '/images/logo.png',
       loginForm: {
         email: '',
         password: '',

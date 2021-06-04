@@ -85,7 +85,8 @@ class Controller extends BaseController
         $automobile_engineers = AutomobileEngineer::get();
         $engine_types = ['Diesel', 'Petrol', 'Kerosene'];
         $expense_types = ['Insurance', 'Maintenance / Repairs', 'Fuel'];
-        $package_types = ['Bottles', 'Boxes', 'Bundles', 'Cartons', 'Clips', 'Packets', 'Pieces', 'Rolls', 'Tins'];
+        $package_types = ['BAG', 'BOTTLE', 'BUCKET', 'DRUM', 'GALLON', 'IBCS', 'JUMBO', 'KEG', 'TABLET'];
+        $unit_of_measurement = ['L' => 'Litres', 'Kg' => 'Kilogram'];
         $product_return_reasons = ['Product short-dated', 'Mass return - expired', 'Mass return - unexpired', 'Rep. resignation/sack - expired', 'Rep. resignation/sack - unexpired', 'Spillage', 'Others'];
         $teams = ['Allied', 'Bull', 'Confectionaries', 'Cosmestics', 'Eagle', 'Falcons', 'Funbact', 'Jaguar', 'Lion', 'REP', 'Stallion'];
         $dispatch_companies = ['GGI LOGISTICS', 'COURIER SERVICE', 'FOB (Free On Board)'];
@@ -93,7 +94,7 @@ class Controller extends BaseController
         $default_roles = Role::where('role_type', 'default')->orderBy('name')->select('name')->get();
 
         return response()->json([
-            'params' => compact('company_name', 'company_contact', 'all_warehouses', 'warehouses', 'items', 'currencies', 'taxes', 'order_statuses', 'invoice_statuses', 'currency', 'vehicle_types', 'engine_types', 'expense_types', 'package_types', 'automobile_engineers', 'all_roles', 'default_roles', 'product_return_reasons', 'product_expiry_date_alert', 'teams', 'dispatch_companies')
+            'params' => compact('company_name', 'company_contact', 'all_warehouses', 'warehouses', 'items', 'currencies', 'taxes', 'order_statuses', 'invoice_statuses', 'currency', 'vehicle_types', 'engine_types', 'expense_types', 'package_types', 'automobile_engineers', 'all_roles', 'default_roles', 'product_return_reasons', 'product_expiry_date_alert', 'teams', 'dispatch_companies', 'unit_of_measurement')
         ]);
     }
     public function settingValue($key)

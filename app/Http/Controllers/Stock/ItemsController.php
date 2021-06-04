@@ -58,6 +58,8 @@ class ItemsController extends Controller
         $quantity_per_carton = $request->quantity_per_carton;
         $description = $request->description;
         $picture = $request->picture;
+        $unit_of_measurement = $request->unit_of_measurement;
+        $volume_per_package = $request->volume_per_package;
         $item = Item::where('name', $name)->first();
 
         if (!$item) {
@@ -66,6 +68,8 @@ class ItemsController extends Controller
             $item->package_type = $package_type;
             $item->quantity_per_carton = $quantity_per_carton;
             $item->category_id = $category_id;
+            $item->unit_of_measurement = $unit_of_measurement;
+            $item->volume_per_package = $volume_per_package;
             // $item->sku = $sku;
             $item->description = $description;
             $item->picture = $picture;
@@ -115,6 +119,8 @@ class ItemsController extends Controller
         $item->category_id = $request->category_id;
         $item->package_type = $request->package_type;
         $item->quantity_per_carton = $request->quantity_per_carton;
+        $item->unit_of_measurement = $request->unit_of_measurement;
+        $item->volume_per_package = $request->volume_per_package;
         // $item->sku = $request->sku;
         $item->description = $request->description;
         $item->picture = $request->picture;

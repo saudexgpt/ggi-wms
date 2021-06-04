@@ -18,17 +18,32 @@
                 <el-option v-for="(category, index) in categories" :key="index" :value="category.id" :label="category.name" />
 
               </el-select>
+              <label for="">Unit of Measurement</label>
+              <el-select v-model="form.unit_of_measurement" placeholder="Select item category" filterable class="span">
+                <el-option v-for="(label, value) in params.unit_of_measurement" :key="value" :value="value" :label="label" />
+
+              </el-select>
               <!-- <label for="">Stock Keeping Unit (SKU)</label>
               <el-input v-model="form.sku" placeholder="Stock Keeping Unit (SKU)" class="span" /> -->
               <label for="">Packaging Type</label>
-              <el-select v-model="form.package_type" placeholder="Select Product" filterable class="span" @input="fetchProductDetails(index)">
+              <el-select v-model="form.package_type" placeholder="Select Product" filterable class="span">
                 <el-option v-for="(type, type_index) in params.package_types" :key="type_index" :value="type" :label="type" />
 
               </el-select>
-              <label for="">Quantity in a carton</label>
-              <el-input v-model="form.quantity_per_carton" type="number" placeholder="Quantity in a carton" class="span" />
+              <label for="">Volume per {{ form.package_type }} in {{ params.unit_of_measurement[form.unit_of_measurement] }}</label> <br>
+              <el-input-number v-model="form.volume_per_package" type="number" :precision="2" :step="0.1" :min="1" placeholder="Volume per unit" class="span" />
             </el-col>
             <el-col :xs="24" :sm="12" :md="12">
+              <!-- <label for="">Cost Price</label>
+                <el-input v-model="form.purchase_price" placeholder="Cost Price" class="span" /> -->
+
+              <label for="">Rate per {{ form.package_type }}</label>
+              <el-input v-model="item_price.sale_price" placeholder="Selling Price" class="span" />
+              <label for="">Select Currency</label>
+              <el-select v-model="item_price.currency_id" placeholder="Select Currency" class="span">
+                <el-option v-for="(currency, index) in params.currencies" :key="index" :value="currency.id" :label="currency.name+' ('+currency.code+')'" />
+
+              </el-select>
               <label for="">Product Description</label>
               <textarea v-model="form.description" placeholder="Product Description" rows="1" class="form-control" />
               <p />
@@ -50,39 +65,6 @@
                 Click to upload item image
               </a>
 
-            </el-col>
-          </el-row>
-          <el-row :gutter="2" class="padded">
-            <el-col :xs="24" :sm="12" :md="12">
-              <!-- <label for="">Cost Price</label>
-              <el-input v-model="item_price.purchase_price" placeholder="Cost Price" class="span" /> -->
-
-              <label for="">Rate per {{ form.package_type }}</label>
-              <el-input v-model="item_price.sale_price" placeholder="Selling Price" class="span" />
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12">
-              <label for="">Select Currency</label>
-              <el-select v-model="item_price.currency_id" placeholder="Select Currency" class="span">
-                <el-option v-for="(currency, index) in params.currencies" :key="index" :value="currency.id" :label="currency.name+' ('+currency.code+')'" />
-
-              </el-select>
-
-              <!-- <label for="">Select Taxes on each item</label>
-              <el-select v-model="form.tax_ids" placeholder="Select Taxes on each item" class="span" multiple>
-                <el-option v-for="(tax, index) in params.taxes" :key="index" :value="tax.id" :label="tax.name+' ('+tax.rate+')'" />
-
-              </el-select>
-              <label>Tax(es) added to this item. To delete, click the trash icon</label>
-              <div v-for="(item_tax, index) in item.taxes" :key="index" class="list-complete-item">
-                <div class="list-complete-item-handle">
-                  {{ item_tax.name }}[{{ item_tax.rate }}]
-                </div>
-                <div style="position:absolute;right:0px;">
-                  <span style="float: right ;margin-top: -30px;margin-right:5px;" @click="destroyProductTax(index, item_tax.id)">
-                    <i style="color:#fff;" class="el-icon-delete" />
-                  </span>
-                </div>
-              </div> -->
             </el-col>
           </el-row>
           <el-row :gutter="2" class="padded">
@@ -136,7 +118,9 @@ export default {
         quantity_per_carton: '',
         category_id: '',
         description: '',
-        picture: 'images/no-image.jpeg',
+        unit_of_measurement: 'L',
+        volume_per_package: 1,
+        picture: '/images/no-image.jpeg',
         // tax_ids: [],
 
       },
@@ -145,7 +129,7 @@ export default {
         // sku: '',
         category_id: '',
         description: '',
-        picture: 'images/no-image.jpeg',
+        picture: '/images/no-image.jpeg',
         // tax_ids: [],
 
       },
