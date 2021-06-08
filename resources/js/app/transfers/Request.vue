@@ -467,7 +467,7 @@ export default {
             }
             return v[j];
           }
-        })
+        }),
       );
     },
   },

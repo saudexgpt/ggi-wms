@@ -225,7 +225,7 @@ export default {
 
       tmp = this.menuPermissions.filter(
         (permission) =>
-          !this.currentUser.permissions.role.find((p) => p.id === permission.id)
+          !this.currentUser.permissions.role.find((p) => p.id === permission.id),
       );
       const userPermissions = {
         id: 0, // Faked ID
@@ -254,7 +254,7 @@ export default {
 
       tmp = this.otherPermissions.filter(
         (permission) =>
-          !this.currentUser.permissions.role.find((p) => p.id === permission.id)
+          !this.currentUser.permissions.role.find((p) => p.id === permission.id),
       );
       const userPermissions = {
         id: 0,
@@ -273,7 +273,7 @@ export default {
     },
     userPermissions() {
       return this.currentUser.permissions.role.concat(
-        this.currentUser.permissions.user
+        this.currentUser.permissions.user,
       );
     },
   },
@@ -347,7 +347,7 @@ export default {
             return v['roles'].join(', ');
           }
           return v[j];
-        })
+        }),
       );
     },
   },

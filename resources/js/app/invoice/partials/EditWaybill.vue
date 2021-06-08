@@ -238,14 +238,10 @@ import checkPermission from '@/utils/permission';
 import checkRole from '@/utils/role';
 
 import Resource from '@/api/resource';
-const unDeliveredInvoices = new Resource(
-  'invoice/waybill/undelivered-invoices'
-);
+const unDeliveredInvoices = new Resource('invoice/waybill/undelivered-invoices');
 // const availableVehicles = new Resource('invoice/waybill/fetch-available-vehicles');
 const updateWaybillResource = new Resource('invoice/waybill/update');
-const fetchProductBatches = new Resource(
-  'stock/items-in-stock/product-batches'
-);
+const fetchProductBatches = new Resource('stock/items-in-stock/product-batches');
 export default {
   // name: 'GenerateWaybill',
   props: {
@@ -411,7 +407,7 @@ export default {
               confirmButtonText: 'OK',
               cancelButtonText: 'Cancel',
               type: 'warning',
-            }
+            },
           )
             .then(() => {
               const loader = updateWaybillResource.loaderShow();

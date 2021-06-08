@@ -330,7 +330,7 @@ export default {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning',
-        }
+        },
       )
         .then(() => {
           this.loading = true;

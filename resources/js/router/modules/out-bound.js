@@ -12,6 +12,24 @@ const permissionRoutes = {
     // roles: ['admin', 'stock officer'],
   },
   children: [
+    {
+      path: 'orders',
+      component: () => import('@/app/invoice/Orders'),
+      name: 'Orders',
+      meta: {
+        title: 'Orders',
+        permissions: ['view order'],
+      },
+    },
+    {
+      path: 'waybill',
+      component: () => import('@/app/invoice/Waybill'),
+      name: 'Waybills',
+      meta: {
+        title: 'Waybills',
+        permissions: ['view waybill', 'manage waybill'],
+      },
+    },
 
     {
       path: 'invoices',
@@ -31,22 +49,23 @@ const permissionRoutes = {
     // },
     {
       path: 'create-new',
-      component: () => import('@/app/invoice/partials/CreateInvoice'),
+      component: () => import('@/app/invoice/partials/CreateOrder'),
+      name: 'CreateOrder',
+      meta: {
+        title: 'Create New',
+        permissions: ['create order'],
+      },
+      hidden: true,
+    },
+    {
+      path: 'create-new',
+      component: () => import('@/app/invoice/partials/GenerateInvoice'),
       name: 'CreateInvoice',
       meta: {
         title: 'Create New',
         permissions: ['create invoice'],
       },
       hidden: true,
-    },
-    {
-      path: 'waybill',
-      component: () => import('@/app/invoice/Waybill'),
-      name: 'Waybills',
-      meta: {
-        title: 'Waybills',
-        permissions: ['view waybill', 'manage waybill'],
-      },
     },
     {
       path: 'waybill-delivery-cost',

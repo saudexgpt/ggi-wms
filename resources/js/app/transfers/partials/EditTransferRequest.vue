@@ -285,7 +285,7 @@ export default {
           detail.quantity === '' ||
           detail.rate === null ||
           detail.tax === null ||
-          detail.total === 0
+          detail.total === 0,
       );
 
       if (checkEmptyLines.length >= 1 && this.transfer_request_items.length > 0) {

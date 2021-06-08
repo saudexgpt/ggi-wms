@@ -310,7 +310,7 @@ export default {
           confirmButtonText: 'YES',
           cancelButtonText: 'Cancel',
           type: 'warning',
-        }
+        },
       )
         .then(() => {
           const loader = deleteWaybill.loaderShow();

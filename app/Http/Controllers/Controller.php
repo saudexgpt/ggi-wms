@@ -85,10 +85,10 @@ class Controller extends BaseController
         $automobile_engineers = AutomobileEngineer::get();
         $engine_types = ['Diesel', 'Petrol', 'Kerosene'];
         $expense_types = ['Insurance', 'Maintenance / Repairs', 'Fuel'];
-        $package_types = ['BAG', 'BOTTLE', 'BUCKET', 'DRUM', 'GALLON', 'IBCS', 'JUMBO', 'KEG', 'TABLET'];
+        $package_types = ['BAG', 'BOTTLE', 'BUCKET', 'DRUM', 'IBCS', 'JUMBO', 'KEG', 'TABLET'];
         $unit_of_measurement = ['L' => 'Litres', 'Kg' => 'Kilogram'];
-        $product_return_reasons = ['Product short-dated', 'Mass return - expired', 'Mass return - unexpired', 'Rep. resignation/sack - expired', 'Rep. resignation/sack - unexpired', 'Spillage', 'Others'];
-        $teams = ['Allied', 'Bull', 'Confectionaries', 'Cosmestics', 'Eagle', 'Falcons', 'Funbact', 'Jaguar', 'Lion', 'REP', 'Stallion'];
+        $product_return_reasons = ['Product short-dated', 'Mass return - expired', 'Mass return - unexpired', 'Spillage', 'Others'];
+        $teams = ['customer'];
         $dispatch_companies = ['GGI LOGISTICS', 'COURIER SERVICE', 'FOB (Free On Board)'];
         $all_roles = Role::orderBy('name')->select('name')->get();
         $default_roles = Role::where('role_type', 'default')->orderBy('name')->select('name')->get();

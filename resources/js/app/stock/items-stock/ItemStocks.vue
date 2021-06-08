@@ -333,8 +333,8 @@ export default {
           app.items_in_stock = response.items_in_stock;
           app.expired_products = response.expired_products;
           // app.in_warehouse = 'in ' + app.warehouses[param.warehouse_index].name;
-          app.table_title = 'Unexpired Products in ' + app.warehouses[param.warehouse_index].name + ' from: ' + app.form.from + ' to: ' + app.form.to;
-          app.expired_title = 'Expired Products in ' + app.warehouses[param.warehouse_index].name + ' from: ' + app.form.from + ' to: ' + app.form.to;
+          app.table_title = 'Unexpired Products in ' + app.warehouses[param.warehouse_index].name;/* + ' from: ' + app.form.from + ' to: ' + app.form.to;*/
+          app.expired_title = 'Expired Products in ' + app.warehouses[param.warehouse_index].name;/* + ' from: ' + app.form.from + ' to: ' + app.form.to;*/
           loader.hide();
         })
         .catch(error => {

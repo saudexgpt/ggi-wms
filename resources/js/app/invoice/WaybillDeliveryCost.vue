@@ -256,11 +256,9 @@ import Resource from '@/api/resource';
 const necessaryParams = new Resource('fetch-necessary-params');
 const fetchWaybillExpenses = new Resource('invoice/waybill/expenses');
 const addWaybillExpenses = new Resource('invoice/waybill/add-waybill-expenses');
-const detachWaybillFromTrip = new Resource(
-  'invoice/waybill/detach-waybill-from-trip'
-);
+const detachWaybillFromTrip = new Resource('invoice/waybill/detach-waybill-from-trip');
 const addWaybillToTripResource = new Resource(
-  'invoice/waybill/add-waybill-to-trip'
+  'invoice/waybill/add-waybill-to-trip',
 );
 const confirmDeliveryCostResource = new Resource('audit/confirm/delivery-cost');
 // const deleteItemInStock = new Resource('stock/items-in-stock/delete');
@@ -486,7 +484,7 @@ export default {
             confirmButtonText: 'OK',
             cancelButtonText: 'Cancel',
             type: 'warning',
-          }
+          },
         )
         .then(() => {
           const param = {
@@ -570,7 +568,7 @@ export default {
             return drivers;
           }
           return v[j];
-        })
+        }),
       );
     },
   },

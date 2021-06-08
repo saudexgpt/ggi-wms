@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <div v-if="page.option==='list'">
-      <router-link
+      <!-- <router-link
         v-if="checkPermission(['create invoice']) && canCreateNewInvoice"
         :to="{name:'CreateInvoice'}"
         class="btn btn-default"
-      >Create New Invoice</router-link>
+      >Create New Invoice</router-link> -->
       <el-row :gutter="10">
         <el-col :xs="24" :sm="8" :md="8">
           <label for>Select Warehouse</label>
@@ -24,7 +24,7 @@
             />
           </el-select>
         </el-col>
-        <el-col :xs="24" :sm="6" :md="6">
+        <!-- <el-col :xs="24" :sm="6" :md="6">
           <label for>Filter by:</label>
           <el-select
             v-model="form.status"
@@ -39,7 +39,7 @@
               :label="status.name"
             />
           </el-select>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="10" :md="10">
           <br>
           <el-popover placement="right" trigger="click">
@@ -137,13 +137,13 @@
             >
               <i class="el-icon-edit" />
             </a> -->
-            <a
+            <!-- <a
               v-if="props.row.status === 'pending' && checkPermission(['update invoice'])"
               class="btn btn-warning"
               @click="invoice=props.row; page.option='edit_invoice'; selected_row_index=props.index"
             >
               <i class="el-icon-edit" />
-            </a>
+            </a> -->
             <a
               v-if="props.row.waybill_items.length < 1 && checkPermission(['delete invoice'])"
               class="btn btn-danger"
@@ -190,10 +190,10 @@
         :currency="currency"
       />
     </div>
-    <div v-if="page.option==='edit_invoice'">
+    <!-- <div v-if="page.option==='edit_invoice'">
       <a class="btn btn-danger no-print" @click="page.option='list'">Go Back</a>
       <edit-invoice :invoice="invoice" :page="page" :params="params" @update="onEditUpdate" />
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -203,8 +203,8 @@ import { parseTime } from '@/utils';
 import Resource from '@/api/resource';
 import checkPermission from '@/utils/permission';
 import checkRole from '@/utils/role';
-import InvoiceDetails from './Details';
-import EditInvoice from './partials/EditInvoice';
+import InvoiceDetails from './InvoiceDetails';
+// import EditInvoice from './partials/EditInvoice';
 const necessaryParams = new Resource('fetch-necessary-params');
 const fetchInvoices = new Resource('invoice/general');
 // const approveInvoiceResource = new Resource('invoice/general/approve');
@@ -212,7 +212,7 @@ const fetchInvoices = new Resource('invoice/general');
 const cancelInvoiceResource = new Resource('invoice/general/cancel');
 const deleteInvoiceResource = new Resource('invoice/general/delete');
 export default {
-  components: { InvoiceDetails, EditInvoice, Pagination },
+  components: { InvoiceDetails, Pagination },
   props: {
     canCreateNewInvoice: {
       type: Boolean,
@@ -232,9 +232,9 @@ export default {
         'customer.user.name',
         'amount',
         'invoice_date',
-        'created_at',
+        // 'created_at',
         'status',
-        'waybill_generated',
+        // 'waybill_generated',
         'confirmed_by',
       ],
 
@@ -243,10 +243,10 @@ export default {
           'customer.user.name': 'Customer',
           invoice_number: 'Invoice Number',
           amount: 'Amount',
-          invoice_date: 'Invoice Date',
-          created_at: 'Date Saved',
+          invoice_date: 'Date',
+          // created_at: 'Date Saved',
           status: 'Status',
-          waybill_generated: 'Waybill Generated',
+          // waybill_generated: 'Waybill Generated',
 
           // id: 'S/N',
         },
@@ -279,7 +279,7 @@ export default {
         from: '',
         to: '',
         panel: '',
-        status: 'pending',
+        status: 'delivered',
         page: 1,
         limit: 10,
         keyword: '',
@@ -369,10 +369,7 @@ export default {
       if (app.form.from !== '' && app.form.to !== '') {
         extra_tableTitle = ' from ' + app.form.from + ' to ' + app.form.to;
       }
-      app.table_title =
-        app.form.status.toUpperCase() +
-        ' Invoices  in ' +
-        app.warehouses[param.warehouse_index].name +
+      app.table_title = 'Generated Invoices for ' + app.warehouses[param.warehouse_index].name +
         extra_tableTitle;
       fetchInvoices
         .list(param)
@@ -451,7 +448,7 @@ export default {
             return parseTime(v[j]);
           }
           return v[j];
-        })
+        }),
       );
     },
   },

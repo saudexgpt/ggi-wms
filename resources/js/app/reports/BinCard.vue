@@ -244,7 +244,7 @@ export default {
           'packaging': '',
           'physical_quantity': '',
           'sign': '',
-        }
+        },
       );
     },
     handleDownload() {

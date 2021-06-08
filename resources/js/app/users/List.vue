@@ -473,7 +473,7 @@ export default {
 
       tmp = this.menuPermissions.filter(
         (permission) =>
-          !this.currentUser.permissions.role.find((p) => p.id === permission.id)
+          !this.currentUser.permissions.role.find((p) => p.id === permission.id),
       );
       const userPermissions = {
         id: 0, // Faked ID
@@ -502,7 +502,7 @@ export default {
 
       tmp = this.otherPermissions.filter(
         (permission) =>
-          !this.currentUser.permissions.role.find((p) => p.id === permission.id)
+          !this.currentUser.permissions.role.find((p) => p.id === permission.id),
       );
       const userPermissions = {
         id: 0,
@@ -521,7 +521,7 @@ export default {
     },
     userPermissions() {
       return this.currentUser.permissions.role.concat(
-        this.currentUser.permissions.user
+        this.currentUser.permissions.user,
       );
     },
   },
@@ -593,7 +593,7 @@ export default {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning',
-        }
+        },
       )
         .then(() => {
           this.loading = true;
@@ -608,7 +608,7 @@ export default {
                 message: 'Password Changed',
               });
               alert(
-                'New Password for ' + name + ' is: ' + response.new_password
+                'New Password for ' + name + ' is: ' + response.new_password,
               );
               this.handleFilter();
               this.loading = false;
@@ -633,7 +633,7 @@ export default {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning',
-        }
+        },
       )
         .then(() => {
           this.loading = true;
@@ -673,10 +673,10 @@ export default {
       this.dialogPermissionLoading = false;
       this.$nextTick(() => {
         this.$refs.menuPermissions.setCheckedKeys(
-          this.permissionKeys(this.userMenuPermissions)
+          this.permissionKeys(this.userMenuPermissions),
         );
         this.$refs.otherPermissions.setCheckedKeys(
-          this.permissionKeys(this.userOtherPermissions)
+          this.permissionKeys(this.userOtherPermissions),
         );
       });
     },
@@ -722,7 +722,7 @@ export default {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning',
-        }
+        },
       )
         .then(() => {
           this.loading = true;
@@ -734,7 +734,7 @@ export default {
                 message: 'Role assigned',
               });
               document.getElementById(
-                user.id
+                user.id,
               ).innerHTML = response.data.roles.join(', ');
               this.loading = false;
             })
@@ -802,7 +802,7 @@ export default {
             return v['roles'].join(', ');
           }
           return v[j];
-        })
+        }),
       );
     },
     permissionKeys(permissions) {
@@ -828,7 +828,7 @@ export default {
       return {
         id: permission.id,
         name: this.$options.filters.uppercaseFirst(
-          permission.name.substring(10)
+          permission.name.substring(10),
         ),
         disabled: permission.disabled || false,
       };

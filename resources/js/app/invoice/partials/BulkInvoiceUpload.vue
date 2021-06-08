@@ -248,7 +248,7 @@ export default {
           detail.invoice_number === '' ||
           detail.invoice_date === '' ||
           detail.bulk_invoices_data.length < 1 ||
-          detail.bulk_invoices_header.length < 1
+          detail.bulk_invoices_header.length < 1,
       );
 
       if (checkEmptyLines.length >= 1 && this.bulk_invoices.length > 0) {
@@ -318,7 +318,7 @@ export default {
           detail.invoice_number === '' ||
           detail.invoice_date === '' ||
           detail.bulk_invoices_data.length < 1 ||
-          detail.bulk_invoices_header.length < 1
+          detail.bulk_invoices_header.length < 1,
       );
 
       if (checkEmptyLines.length > 0 || form.warehouse_id === '') {

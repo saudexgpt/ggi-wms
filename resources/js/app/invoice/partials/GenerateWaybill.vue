@@ -23,7 +23,7 @@
                   placeholder="Select Warehouse"
                   filterable
                   class="span"
-                  @change="fetchUndeliveredInvoices()"
+                  @change="fetchUndeliveredOrders()"
                 >
                   <el-option
                     v-for="(warehouse, warehouse_index) in params.warehouses"
@@ -34,16 +34,16 @@
                 </el-select>
               </el-col>
               <el-col :xs="24" :sm="12" :md="12">
-                <label for="">Search Invoice</label>
-                <small>(Only confirmed invoice by auditors will be displayed for waybilling)</small>
+                <label for="">Search Order</label>
+                <small>(Only confirmed orders by auditors will be displayed for waybilling)</small>
                 <el-select
                   v-model="selected_invoice"
-                  placeholder="Select Invoice"
+                  placeholder="Select Orders"
                   filterable
                   class="span"
                   multiple
                   collapse-tags
-                  @input="displayInvoiceitems()"
+                  @input="displayOrderitems()"
                 >
                   <el-option
                     v-for="(invoice, invoice_index) in invoices"
@@ -62,7 +62,7 @@
               </el-col>
               <!-- <el-col :xs="24" :sm="2" :md="2">
                 <br>
-                <el-button type="success" @click="displayInvoiceitems()"><i class="el-icon-plus" />
+                <el-button type="success" @click="displayOrderitems()"><i class="el-icon-plus" />
                   Generate Waybill
                 </el-button>
               </el-col> -->
@@ -235,16 +235,12 @@ import checkPermission from '@/utils/permission';
 import checkRole from '@/utils/role';
 
 import Resource from '@/api/resource';
-// const createInvoice = new Resource('invoice/general/store');
+// const createOrder = new Resource('invoice/general/store');
 const necessaryParams = new Resource('fetch-necessary-params');
-const unDeliveredInvoices = new Resource(
-  'invoice/waybill/undelivered-invoices'
-);
+const unDeliveredOrders = new Resource('invoice/waybill/undelivered-invoices');
 // const availableVehicles = new Resource('invoice/waybill/fetch-available-vehicles');
 const storeWaybillResource = new Resource('invoice/waybill/store');
-const fetchProductBatches = new Resource(
-  'stock/items-in-stock/product-batches'
-);
+const fetchProductBatches = new Resource('stock/items-in-stock/product-batches');
 export default {
   name: 'GenerateWaybill',
 
@@ -295,11 +291,11 @@ export default {
         return response.batches_of_items_in_stock;
       });
     },
-    fetchUndeliveredInvoices(index) {
+    fetchUndeliveredOrders(index) {
       const app = this;
       var form = app.form;
-      const loader = unDeliveredInvoices.loaderShow();
-      unDeliveredInvoices.list(form).then((response) => {
+      const loader = unDeliveredOrders.loaderShow();
+      unDeliveredOrders.list(form).then((response) => {
         app.invoices = response.invoices;
         app.form.waybill_no = response.waybill_no;
         loader.hide();
@@ -312,7 +308,7 @@ export default {
         app.params = response.params;
       });
     },
-    displayInvoiceitems() {
+    displayOrderitems() {
       const app = this;
       var selected_invoice = app.selected_invoice;
       var invoice_items = [];
@@ -376,7 +372,7 @@ export default {
               confirmButtonText: 'OK',
               cancelButtonText: 'Cancel',
               type: 'warning',
-            }
+            },
           )
             .then(() => {
               const loader = storeWaybillResource.loaderShow();

@@ -261,7 +261,7 @@ export default {
       const checkEmptyLines = this.request_items.filter(
         (detail) =>
           detail.item_id === '' ||
-          detail.quantity === ''
+          detail.quantity === '',
       );
 
       if (checkEmptyLines.length >= 1 && this.request_items.length > 0) {

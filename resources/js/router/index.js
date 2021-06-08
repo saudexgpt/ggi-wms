@@ -53,13 +53,13 @@ export const constantRoutes = [{
   children: [{
     path: '/redirect/:path*',
     component: () =>
-        import ('@/views/redirect/index'),
+      import ('@/views/redirect/index'),
   }],
 },
 {
   path: '/login',
   component: () =>
-      import ('@/app/login/index'),
+    import ('@/app/login/index'),
   hidden: true,
 },
 {
@@ -74,7 +74,7 @@ export const constantRoutes = [{
   children: [{
     path: '',
     component: () =>
-        import ('@/app/reports/Notifications'),
+      import ('@/app/reports/Notifications'),
 
   }],
 
@@ -82,20 +82,20 @@ export const constantRoutes = [{
 {
   path: '/auth-redirect',
   component: () =>
-      import ('@/app/login/AuthRedirect'),
+    import ('@/app/login/AuthRedirect'),
   hidden: true,
 },
 {
   path: '/404',
   redirect: { name: 'Page404' },
   component: () =>
-      import ('@/views/error-page/404'),
+    import ('@/views/error-page/404'),
   hidden: true,
 },
 {
   path: '/401',
   component: () =>
-      import ('@/views/error-page/401'),
+    import ('@/views/error-page/401'),
   hidden: true,
 },
 {
@@ -105,7 +105,7 @@ export const constantRoutes = [{
   children: [{
     path: 'dashboard',
     component: () =>
-          import ('@/app/dashboard/index'),
+      import ('@/app/dashboard/index'),
     name: 'Dashboard',
     meta: { title: 'dashboard', icon: 'el-icon-s-home', noCache: false },
   },
@@ -133,7 +133,7 @@ export const constantRoutes = [{
   children: [{
     path: 'edit',
     component: () =>
-        import ('@/app/users/SelfProfile'),
+      import ('@/app/users/SelfProfile'),
     name: 'SelfProfile',
     meta: { title: 'userProfile', icon: 'user', noCache: true },
   }],
@@ -147,7 +147,7 @@ export const constantRoutes = [{
     path: 'change',
     // redirect: 'dashboard',
     component: () =>
-        import ('@/app/users/ChangeDefaultPassword'),
+      import ('@/app/users/ChangeDefaultPassword'),
     hidden: true,
   }],
 },
