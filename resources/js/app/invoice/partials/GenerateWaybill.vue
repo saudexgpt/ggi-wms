@@ -196,7 +196,7 @@
                 style="max-width: 600px"
               >
                 <el-form-item label="Waybill No." prop="waybill_no">
-                  <el-input v-model="form.waybill_no" required readonly />
+                  <el-input v-model="form.waybill_no" required />
                 </el-form-item>
                 <!-- <el-form-item v-else label="Waybill No." prop="waybill_no">
                   <el-input v-model="form.waybill_no" required />

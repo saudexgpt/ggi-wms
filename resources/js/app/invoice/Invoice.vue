@@ -95,33 +95,17 @@
         <v-client-table v-model="invoices" :columns="columns" :options="options">
 
           <div
+            slot="discount"
+            slot-scope="props"
+          >{{ currency + Number(props.row.discount).toLocaleString() }}</div>
+          <div
+            slot="subtotal"
+            slot-scope="props"
+          >{{ currency + Number(props.row.subtotal).toLocaleString() }}</div>
+          <div
             slot="amount"
             slot-scope="props"
           >{{ currency + Number(props.row.amount).toLocaleString() }}</div>
-          <div
-            slot="confirmed_by"
-            slot-scope="props"
-          >{{ (props.row.confirmer) ? props.row.confirmer.name : '' }}</div>
-          <div
-            slot="waybill_generated"
-            slot-scope="props"
-          >
-            <div v-if="props.row.waybill_items.length > 0">
-              <div v-if="props.row.full_waybill_generated ==='1'" class="label label-success">
-                Fully Generated
-              </div>
-              <div v-else class="label label-warning">
-                Partially Generated
-              </div>
-            </div>
-            <div v-else class="alert alert-danger">
-              No
-            </div>
-          </div>
-          <div
-            slot="invoice_date"
-            slot-scope="props"
-          >{{ moment(props.row.invoice_date).format('MMMM Do YYYY') }}</div>
           <div
             slot="created_at"
             slot-scope="props"
@@ -130,43 +114,6 @@
             <a class="btn btn-default" @click="invoice=props.row; page.option='invoice_details'">
               <i class="el-icon-tickets" />
             </a>
-            <!-- <a
-              v-if="props.row.status === 'pending' && props.row.full_waybill_generated ==='0' && checkPermission(['update invoice'])"
-              class="btn btn-warning"
-              @click="invoice=props.row; page.option='edit_invoice'; selected_row_index=props.index"
-            >
-              <i class="el-icon-edit" />
-            </a> -->
-            <!-- <a
-              v-if="props.row.status === 'pending' && checkPermission(['update invoice'])"
-              class="btn btn-warning"
-              @click="invoice=props.row; page.option='edit_invoice'; selected_row_index=props.index"
-            >
-              <i class="el-icon-edit" />
-            </a> -->
-            <a
-              v-if="props.row.waybill_items.length < 1 && checkPermission(['delete invoice'])"
-              class="btn btn-danger"
-              @click="deleteInvoice(props.index, props.row)"
-            >
-              <i class="fa fa-trash" />
-            </a>
-            <!-- <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-              <div class="avatar-wrapper" style="color: brown">
-                <label style="cursor:pointer"><i class="el-icon-more-outline" /></label>
-              </div>
-              <el-dropdown-menu slot="dropdown" style="padding: 10px;">
-                <el-dropdown-item v-if="props.row.invoice_status === 'pending' && checkPermission(['approve invoice'])">
-                  <a @click="approveInvoice(props.index, props.row);">Approve</a>
-                </el-dropdown-item>
-                <el-dropdown-item v-if="props.row.invoice_status === 'approved' && checkPermission(['approve invoice', 'deliver invoice'])" divided>
-                  <a @click="deliverInvoice(props.index, props.row);">Delivered</a>
-                </el-dropdown-item>
-                <el-dropdown-item v-if="props.row.invoice_status === 'pending' && checkPermission(['cancel invoice'])" divided>
-                  <a @click="cancelInvoice(props.index, props.row);">Cancel</a>
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>-->
           </div>
         </v-client-table>
       </div>
@@ -206,7 +153,7 @@ import checkRole from '@/utils/role';
 import InvoiceDetails from './InvoiceDetails';
 // import EditInvoice from './partials/EditInvoice';
 const necessaryParams = new Resource('fetch-necessary-params');
-const fetchInvoices = new Resource('invoice/general');
+const fetchInvoices = new Resource('invoice/general/customer-invoices');
 // const approveInvoiceResource = new Resource('invoice/general/approve');
 // const deliverInvoiceResource = new Resource('invoice/general/deliver');
 const cancelInvoiceResource = new Resource('invoice/general/cancel');
@@ -230,22 +177,23 @@ export default {
         'action',
         'invoice_number',
         'customer.user.name',
+        'discount',
+        'subtotal',
         'amount',
-        'invoice_date',
-        // 'created_at',
-        'status',
+        // 'invoice_date',
+        'created_at',
+        // 'status',
         // 'waybill_generated',
-        'confirmed_by',
+        // 'confirmed_by',
       ],
 
       options: {
         headings: {
           'customer.user.name': 'Customer',
           invoice_number: 'Invoice Number',
-          amount: 'Amount',
-          invoice_date: 'Date',
-          // created_at: 'Date Saved',
-          status: 'Status',
+          // invoice_date: 'Date',
+          created_at: 'Generated',
+          // status: 'Status',
           // waybill_generated: 'Waybill Generated',
 
           // id: 'S/N',
@@ -259,7 +207,7 @@ export default {
         sortable: [
           'invoice_number',
           'customer.user.name',
-          'invoice_date',
+          'created_at',
           'status',
         ],
         filterable: false,

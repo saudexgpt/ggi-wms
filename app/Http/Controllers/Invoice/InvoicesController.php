@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Invoice;
 use App\Customer;
 use App\Driver;
 use App\Http\Controllers\Controller;
+use App\Models\Invoice\CustomerInvoice;
 use App\Models\Invoice\DeliveryTrip;
 use App\Models\Invoice\DeliveryTripExpense;
 use App\Models\Invoice\Invoice;
@@ -711,26 +712,7 @@ class InvoicesController extends Controller
         return $this->show($invoice);
     }
 
-    private function updateInvoiceItems($invoice_items)
-    {
-        foreach ($invoice_items as $item) {
-            // $batches = $item->batches;
-            $invoice_item = InvoiceItem::find($item->id);
-            // keep the old quantity
-            // $old_quantity = $invoice_item->quantity;
 
-            $invoice_item->quantity = $item->quantity;
-            $invoice_item->no_of_cartons = $item->no_of_cartons;
-            $invoice_item->item_id = $item->item_id;
-            $invoice_item->type = $item->type;
-            $invoice_item->rate = $item->rate;
-            $invoice_item->amount = $item->amount;
-            $invoice_item->save();
-
-            // $batches = $invoice_item->batches;
-            // $this->removeOldInvoiceItemBatchesAndCreateNewOne($invoice_item, $batches, $old_quantity);
-        }
-    }
     /**
      * Display the specified resource.
      *
@@ -839,11 +821,13 @@ class InvoicesController extends Controller
         $invoice_ids = $request->invoice_ids;
         // $invoice = Invoice::find($request->invoice_id);
         $warehouse_id = $request->warehouse_id;
-        $warehouse_id = $request->warehouse_id;
         $message = '';
         $invoice_items = json_decode(json_encode($request->invoice_items));
-
-        $waybill_no = $this->nextReceiptNo('waybill');
+        $waybill = Waybill::where('waybill_no', $request->waybill_no)->first();
+        if ($waybill) {
+            return response()->json(['message' => 'Dupicate Waybill No. Refresh the page please!!!'], 500);
+        }
+        $waybill_no = $request->waybill_no; //$this->nextReceiptNo('waybill');
         $waybill = new Waybill();
         $waybill->warehouse_id = $warehouse_id;
         // $waybill->invoice_id = $request->invoice_id;
@@ -1251,9 +1235,17 @@ class InvoicesController extends Controller
                 $this->setVehicleAvailability($vehicle, 'available');
             }
             $item_in_stock_obj->confirmItemInStockAsSupplied($waybill->dispatchProducts);
+            $invoices_total_amount = 0;
+            $invoices_sub_total = 0;
+            $invoices_discount = 0;
+            $customer_id = 0;
             foreach ($invoices as  $invoice) {
 
+                $customer_id = $invoice->customer_id;
                 $invoice->status = $status;
+                $invoices_total_amount += $invoice->amount;
+                $invoices_sub_total += $invoice->subtotal;
+                $invoices_discount += $invoice->discount;
                 // check for partial supplies
                 $incomplete_invoice_item = $invoice->invoiceItems()->where('supply_status', '=', 'Partial')->first();
                 if ($incomplete_invoice_item) {
@@ -1262,6 +1254,21 @@ class InvoicesController extends Controller
                 $invoice->save();
                 //log this action to invoice history
                 $this->createInvoiceHistory($invoice, $title, $description);
+            }
+            // generate customer Invoice if not already generated
+            $customer_invoice = CustomerInvoice::where('waybill_id', $waybill->id)->first();
+            if (!$customer_invoice) {
+                $customer_invoice = new CustomerInvoice();
+                $customer_invoice->warehouse_id = $waybill->warehouse_id;
+                $customer_invoice->waybill_id = $waybill->id;
+                $customer_invoice->customer_id = $customer_id;
+                $customer_invoice->amount = $invoices_total_amount;
+                $customer_invoice->subtotal = $invoices_sub_total;
+                $customer_invoice->discount = $invoices_discount;
+                if ($customer_invoice->save()) {
+                    $customer_invoice->invoice_number  = $this->getInvoiceNo('INV-', $customer_invoice->id);
+                    $customer_invoice->save();
+                }
             }
         }
 
@@ -1358,5 +1365,76 @@ class InvoicesController extends Controller
         $roles = ['assistant admin', 'warehouse manager', 'warehouse auditor'];
         $this->logUserActivity($title, $description, $roles);
         return response()->json(null, 204);
+    }
+
+    public function fetchCustomerInvoice(Request $request)
+    {
+        //
+        $searchParams = $request->all();
+        $invoiceQuery = CustomerInvoice::query();
+        $limit = Arr::get($searchParams, 'limit', static::ITEM_PER_PAGE);
+        $keyword = Arr::get($searchParams, 'keyword', '');
+        if (!empty($keyword)) {
+            $invoiceQuery->where(function ($q) use ($keyword) {
+                $q->where('invoice_number', 'LIKE', '%' . $keyword . '%');
+                $q->orWhere('amount', 'LIKE', '%' . $keyword . '%');
+                $q->orWhere('created_at', 'LIKE', '%' . $keyword . '%');
+                $q->orWhereHas('customer', function ($q) use ($keyword) {
+                    $q->whereHas('user', function ($q) use ($keyword) {
+                        $q->where('name', 'LIKE', '%' . $keyword . '%');
+                    });
+                });
+            });
+        }
+        $user = $this->getUser();
+        $warehouse_id = $request->warehouse_id;
+        $invoices = [];
+        // if (isset($request->from, $request->to, $request->status) && $request->from != '' && $request->from != '' && $request->status != '') {
+        // $date_from = date('Y-m-d', strtotime($request->from)) . ' 00:00:00';
+        // $date_to = date('Y-m-d', strtotime($request->to)) . ' 23:59:59';
+        // $status = $request->status;
+        // $panel = $request->panel;
+        $invoices = $invoiceQuery->with(['warehouse', 'waybill.waybillItems.item', 'customer.user', 'customer.type'])->where(['warehouse_id' => $warehouse_id])/*->where('created_at', '>=', $date_from)->where('created_at', '<=', $date_to)*/->orderBy('id', 'DESC')->paginate($limit);
+        // }
+        return response()->json(compact('invoices'));
+    }
+    public function customerWaybillInvoice(Request $request)
+    {
+        $waybill_id = $request->waybill_id;
+        $customer_invoice = CustomerInvoice::with(['warehouse', 'waybill.waybillItems.item', 'customer.user', 'customer.type'])->where(['waybill_id' => $waybill_id])->first();
+        return response()->json(compact('customer_invoice'), 200);
+    }
+
+    public function updateCustomerInvoice(Request $request, CustomerInvoice $customer_invoice)
+    {
+        $user = $this->getUser();
+        $invoice_items = json_decode(json_encode($request->invoice_items));
+        // $invoice = CustomerInvoice::find($request->id);
+        $customer_invoice->subtotal            = $request->subtotal;
+        $customer_invoice->discount            = $request->discount;
+        $customer_invoice->amount              = $request->amount;
+        $customer_invoice->notes              = $request->notes;
+        $customer_invoice->last_updated_by     = $user->id;
+
+        if ($customer_invoice->save()) {
+            $this->updateCustomerWaybillItems($invoice_items);
+        }
+        $title = "Customer invoice updated";
+        $description = "Customer Invoice with no $customer_invoice->invoice_number was updated by $user->name ($user->phone)";
+        //log this activity
+        $roles = ['assistant admin', 'warehouse manager', 'warehouse auditor'];
+
+        $this->logUserActivity($title, $description, $roles);
+    }
+
+    private function updateCustomerWaybillItems($invoice_items)
+    {
+        foreach ($invoice_items as $item) {
+            // $batches = $item->batches;
+            $invoice_item = WaybillItem::find($item->id);
+            $invoice_item->rate = $item->rate;
+            $invoice_item->amount = $item->amount;
+            $invoice_item->save();
+        }
     }
 }

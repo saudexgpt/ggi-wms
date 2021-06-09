@@ -23,17 +23,21 @@ class OrdersController extends Controller
         //
         $user = $this->getUser();
         $warehouse_id = $request->warehouse_id;
-        $orders = Order::with(['warehouse', 'customer.user', 'customer.type', 'orderItems.item','histories'=>function($q) {
-                $q->orderBy('id','DESC');
+        $orders = Order::with([
+            'warehouse', 'customer.user', 'customer.type', 'orderItems.item', 'histories' => function ($q) {
+                $q->orderBy('id', 'DESC');
             },
-        'currency'])->where('warehouse_id', $warehouse_id)->get();
+            'currency'
+        ])->where('warehouse_id', $warehouse_id)->get();
         if (isset($request->status) && $request->status != '') {
             ////// query by status //////////////
             $status = $request->status;
-            $orders = Order::with(['warehouse', 'customer.user', 'customer.type', 'orderItems.item', 'histories' => function ($q) {
+            $orders = Order::with([
+                'warehouse', 'customer.user', 'customer.type', 'orderItems.item', 'histories' => function ($q) {
                     $q->orderBy('id', 'DESC');
                 },
-            'currency'])->where(['warehouse_id'=>$warehouse_id, 'order_status'=>$status])->get();
+                'currency'
+            ])->where(['warehouse_id' => $warehouse_id, 'order_status' => $status])->get();
         }
         return response()->json(compact('orders'));
     }
@@ -96,7 +100,6 @@ class OrdersController extends Controller
         $order_history->status_code = $order->order_status;
         $order_history->description = $description;
         $order_history->save();
-
     }
 
     private function createOrderItems($order, $order_items)
@@ -112,7 +115,6 @@ class OrdersController extends Controller
             $order_item_obj->tax = $order_item['tax'];
             $order_item_obj->save();
         }
-
     }
 
     /**
@@ -124,10 +126,12 @@ class OrdersController extends Controller
     public function show(Order $order)
     {
         //
-        $order =  $order->with(['warehouse', 'customer.user', 'customer.type', 'orderItems.item', 'histories' => function ($q) {
+        $order =  $order->with([
+            'warehouse', 'customer.user', 'customer.type', 'orderItems.item', 'histories' => function ($q) {
                 $q->orderBy('id', 'DESC');
             },
-        'currency'])->find($order->id);
+            'currency'
+        ])->find($order->id);
         return response()->json(compact('order'), 200);
     }
 
@@ -144,7 +148,7 @@ class OrdersController extends Controller
         $status = $request->status;
         $order->order_status = $status;
         $order->save();
-        $description = "Order ($order->order_number) status changed to ".strtoupper($order->order_status)." by: $user->name ($user->email)";
+        $description = "Order ($order->order_number) status changed to " . strtoupper($order->order_status) . " by: $user->name ($user->email)";
         //log this action to order history
         $this->createOrderHistory($order, $description);
         return $this->show($order);

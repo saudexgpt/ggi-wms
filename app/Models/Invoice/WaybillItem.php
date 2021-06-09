@@ -44,6 +44,8 @@ class WaybillItem extends Model
         $waybill_item->item_id = $invoice_item->item_id;
         $waybill_item->invoice_item_id = $invoice_item->id;
         $waybill_item->quantity = $invoice_item->quantity_for_supply;
+        $waybill_item->rate = $invoice_item->rate;
+        $waybill_item->amount = $invoice_item->amount;
         $waybill_item->type = $invoice_item->type;
         $waybill_item->save();
         // }

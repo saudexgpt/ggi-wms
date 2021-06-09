@@ -2,7 +2,7 @@
   <div class="app-container">
     <span v-if="page.option==='list'">
       <a v-if="checkPermission(['manage vehicles']) && canAddNew" class="btn btn-info" @click="page.option = 'add_new'"> Add New</a>
-      <el-row>
+      <!-- <el-row>
         <el-col :xs="24" :sm="12" :md="12">
           <label for="">Select Warehouse</label>
           <el-select v-model="form.warehouse_index" placeholder="Select Warehouse" class="span" filterable @input="fetchVehicles">
@@ -11,7 +11,7 @@
           </el-select>
 
         </el-col>
-      </el-row>
+      </el-row> -->
       <br>
     </span>
     <div>
@@ -166,7 +166,7 @@ export default {
         warehouse_index: '',
         warehouse_id: '',
       },
-      table_title: '',
+      table_title: 'LIST OF VEHICLES',
       assignVehicle: {
         vehicle_id: '',
         type: '',
@@ -244,7 +244,7 @@ export default {
       vehicleList.list(param)
         .then(response => {
           app.vehicles = response.vehicles;
-          app.table_title = 'LIST OF VEHICLES IN ' + app.warehouses[param.warehouse_index].name.toUpperCase();
+          // app.table_title = 'LIST OF VEHICLES IN ' + app.warehouses[param.warehouse_index].name.toUpperCase();
           loader.hide();
         })
         .catch(error => {

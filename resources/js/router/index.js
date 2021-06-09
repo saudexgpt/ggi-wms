@@ -168,8 +168,8 @@ export const constantRoutes = [{
 ];
 
 export const asyncRoutes = [
-  // OrderRoutes,
   InBoundRoutes,
+  // OrderRoutes,
   OutBoundRoutes,
   TransfersRoutes,
   WarehouseRoutes,

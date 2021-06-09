@@ -204,14 +204,15 @@ class ItemStocksController extends Controller
             $item_stock_sub_batch->stocked_by = $user->id;
             $item_stock_sub_batch->warehouse_id = $request->warehouse_id;
             $item_stock_sub_batch->item_id = $request->item_id;
-            $item_stock_sub_batch->batch_no = $request->batch_no;
+            $item_stock_sub_batch->batch_no = $batch['batch_no']; //$request->batch_no;
             $item_stock_sub_batch->sub_batch_no = $batch['batch_no'];
             $item_stock_sub_batch->quantity = $batch['quantity'];
             $item_stock_sub_batch->reserved_for_supply = 0;
             $item_stock_sub_batch->in_transit = 0; // initial values set to zero
             $item_stock_sub_batch->supplied = 0;
             $item_stock_sub_batch->balance = $batch['quantity'];
-            $item_stock_sub_batch->goods_received_note = $batch['goods_received_note'];
+            $item_stock_sub_batch->production_date = date('Y-m-d', strtotime($batch['production_date']));
+            // $item_stock_sub_batch->goods_received_note = $batch['goods_received_note'];
             $item_stock_sub_batch->expiry_date = date('Y-m-d', strtotime($batch['expiry_date']));
             $item_stock_sub_batch->save();
 

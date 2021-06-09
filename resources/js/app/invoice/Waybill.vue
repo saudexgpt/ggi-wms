@@ -91,7 +91,7 @@
           <div slot="action" slot-scope="props">
             <a class="btn btn-default" @click="waybill=props.row; page.option='waybill_details'"><i class="el-icon-tickets" /></a>
             <a v-if="checkPermission(['generate waybill']) && props.row.confirmed_by===null" class="btn btn-warning" @click="waybill=props.row; page.option='edit_waybill'"><i class="el-icon-edit" /></a>
-            <a v-if="props.row.dispatch_products.length < 1 && checkPermission(['delete pending waybill'])" class="btn btn-danger" @click="deleteWaybill(props.index, props.row)"><i class="el-icon-delete" /></a>
+            <a v-if="props.row.dispatch_products.length < 1 && props.row.waybill_wayfare_status === 'pending' && checkPermission(['delete pending waybill'])" class="btn btn-danger" @click="deleteWaybill(props.index, props.row)"><i class="el-icon-delete" /></a>
 
             <a v-if="props.row.status === 'waybill_generated'" class="btn btn-default" @click="waybill=props.row; waybill.index= props.index - 1; page.option='waybill_details'"><i class="el-icon-success" /></a>
             <!-- <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -174,6 +174,7 @@ export default {
           status: 'Waybill Status',
           dispatchers: 'Dispatchers',
           trip_no: 'Trip No.',
+          invoices: 'Orders',
 
           // id: 'S/N',
         },
@@ -341,7 +342,7 @@ export default {
       this.downloadLoading = true;
       import('@/vendor/Export2Excel').then(excel => {
         const multiHeader = [[this.tableTitle, '', '', '', '', '', '', '', '']];
-        const tHeader = ['WAYBILL NUMBER', 'INVOICES', 'DISPATCHERS', 'TRIP NO.', 'DATE GENERATED', 'WAYBILL STATUS', 'STATUS DATE'];
+        const tHeader = ['WAYBILL NUMBER', 'ORDERS', 'DISPATCHERS', 'TRIP NO.', 'DATE GENERATED', 'WAYBILL STATUS', 'STATUS DATE'];
         const filterVal = ['waybill_no', 'invoices', 'dispatchers', 'trip_no', 'created_at', 'status', 'updated_at'];
         const list = this.waybills;
         const data = this.formatJson(filterVal, list);

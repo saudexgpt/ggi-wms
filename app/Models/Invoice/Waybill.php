@@ -7,6 +7,7 @@ use App\Models\Stock\ItemStock;
 use App\Models\Warehouse\Warehouse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Waybill extends Model
 {
     //
@@ -14,6 +15,10 @@ class Waybill extends Model
     public function invoices()
     {
         return $this->belongsToMany(Invoice::class);
+    }
+    public function customerInvoice()
+    {
+        return $this->hasOne(CustomerInvoice::class);
     }
     public function trips()
     {

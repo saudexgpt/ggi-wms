@@ -42,13 +42,13 @@
           <el-form ref="form" :model="form" label-width="120px">
             <el-row :gutter="5" class="padded">
               <el-col :xs="24" :sm="12" :md="12">
-                <label for>Order Number</label>
+                <!-- <label for>Order Number</label>
                 <el-input
                   v-model="form.invoice_number"
                   placeholder="Will be auto generated when submitted"
                   class="span"
                   disabled
-                />
+                /> -->
                 <label for>Select Warehouse</label>
                 <el-select
                   v-model="form.warehouse_id"
@@ -64,6 +64,16 @@
                     :label="warehouse.name"
                   />
                 </el-select>
+                <label for>Order Date</label>
+                <el-date-picker
+                  v-model="form.invoice_date"
+                  type="date"
+                  placeholder="Order Date"
+                  style="width: 100%;"
+                  format="yyyy/MM/dd"
+                  value-format="yyyy-MM-dd"
+                  :picker-options="pickerOptions"
+                />
               </el-col>
               <el-col :xs="24" :sm="12" :md="12">
                 <label for>
@@ -86,16 +96,6 @@
                     :label="(customer.user) ? customer.user.name : ''"
                   />
                 </el-select>
-                <label for>Order Date</label>
-                <el-date-picker
-                  v-model="form.invoice_date"
-                  type="date"
-                  placeholder="Order Date"
-                  style="width: 100%;"
-                  format="yyyy/MM/dd"
-                  value-format="yyyy-MM-dd"
-                  :picker-options="pickerOptions"
-                />
               </el-col>
             </el-row>
             <div v-if="show_product_list">
@@ -292,7 +292,7 @@ const getCustomers = new Resource('fetch-customers');
 const customerResource = new Resource('user/customer/store');
 const fetchProductBatches = new Resource('stock/items-in-stock/product-batches');
 export default {
-  name: 'AddNewOrder',
+  name: 'CreateOrder',
   components: { AddNewCustomer },
 
   data() {

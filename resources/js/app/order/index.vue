@@ -61,7 +61,6 @@
           </div>
 
         </v-client-table>
-
       </div>
 
     </div>
@@ -110,7 +109,7 @@ export default {
       page: {
         option: 'list',
       },
-      params: [],
+      params: '',
       form: {
         warehouse_index: '',
         warehouse_id: '',

@@ -12,11 +12,11 @@
           <el-form ref="form" :model="form" label-width="120px">
             <el-row :gutter="5" class="padded">
               <el-col :xs="24" :sm="12" :md="12">
-                <label for="">Select Warehouse</label>
+                <!-- <label for="">Select Warehouse</label>
                 <el-select v-model="form.warehouse_id" placeholder="Select Warehouse" filterable class="span">
                   <el-option v-for="(warehouse, index) in params.warehouses" :key="index" :value="warehouse.id" :label="warehouse.name" />
 
-                </el-select>
+                </el-select> -->
 
                 <label for="">Select Vehicle Type</label>
                 <el-select v-model="form.vehicle_type_id" placeholder="Select vehicle type" filterable class="span">
@@ -48,8 +48,8 @@
             </el-row>
             <el-row :gutter="2" class="padded">
               <el-col :xs="24" :sm="6" :md="6">
-                <el-button type="success" @click="addVehicle"><i class="el-icon-plus" />
-                  Add
+                <el-button type="success" @click="addVehicle"><i class="el-icon-save" />
+                  Submit
                 </el-button>
               </el-col>
             </el-row>

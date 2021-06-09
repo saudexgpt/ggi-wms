@@ -11,7 +11,7 @@
         <el-form-item label="Phone" prop="phone">
           <el-input v-model="newCustomer.phone" required />
         </el-form-item>
-        <el-form-item label="Team" prop="customer_type">
+        <el-form-item label="Type" prop="customer_type">
           <el-select v-model="newCustomer.customer_type" placeholder="Customer Type" filterable class="span">
             <el-option v-for="(customer_type, index) in params.teams" :key="index" :value="customer_type" :label="customer_type.toUpperCase()" />
 
@@ -56,7 +56,7 @@ export default {
         phone: null,
         address: '',
         role: 'customer',
-        customer_type: '',
+        customer_type: 'customer',
         password: '',
         confirmPassword: '',
       },

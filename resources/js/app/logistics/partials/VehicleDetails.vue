@@ -36,7 +36,7 @@
               <div class="box-body">
                 <div v-for="(vehicle_driver, index) in vehicle.vehicle_drivers" :key="index" class="col-md-6">
                   <div class="small-box" align="center">
-                    <img :src="vehicle_driver.driver.user.photo" width="100"><br>
+                    <img :src="'/' + vehicle_driver.driver.user.photo" width="100"><br>
                     <label>Name:</label> {{ vehicle_driver.driver.user.name }}<br>
                     <label>Role:</label> {{ vehicle_driver.type }} Driver<br>
                     <label>Phone:</label> {{ vehicle_driver.driver.user.phone }}<br>

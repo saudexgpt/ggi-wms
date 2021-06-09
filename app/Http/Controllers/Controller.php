@@ -22,6 +22,7 @@ use App\Models\Setting\CustomerType;
 use App\Models\Setting\Setting;
 use App\Models\Setting\Tax;
 use App\Models\Stock\Item;
+use App\Models\Stock\ItemStockSubBatch;
 use App\Models\Warehouse\Warehouse;
 use Notification;
 use App\Notifications\AuditTrail;
@@ -31,6 +32,25 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected $user;
+    public function __construct()
+    {
+        // $this->middleware('guest')->except('logout');
+        $this->checkForNegativeTransitProduct();
+    }
+
+    private function checkForNegativeTransitProduct()
+    {
+
+        $items_in_stock = ItemStockSubBatch::where('in_transit', '<', 0)->get();
+        if ($items_in_stock->isNotEmpty()) {
+            foreach ($items_in_stock as $item_in_stock) {
+                $in_transit = $item_in_stock->in_transit;
+                $item_in_stock->in_transit = 0;
+                $item_in_stock->supplied += $in_transit;
+                $item_in_stock->save();
+            }
+        }
+    }
     public function uploadFile(Request $request)
     {
         if ($request->file('avatar') != null && $request->file('avatar')->isValid()) {
@@ -176,5 +196,19 @@ class Controller extends BaseController
         // $activity_log->action = $action;
         // $activity_log->user_type = $user->roles[0]->name;
         // $activity_log->save();
+    }
+
+    public function getInvoiceNo($prefix, $next_no)
+    {
+        $no_of_digits = 5;
+
+        $digit_of_next_no = strlen($next_no);
+        $unused_digit = $no_of_digits - $digit_of_next_no;
+        $zeros = '';
+        for ($i = 1; $i <= $unused_digit; $i++) {
+            $zeros .= '0';
+        }
+
+        return $prefix . $zeros . $next_no;
     }
 }

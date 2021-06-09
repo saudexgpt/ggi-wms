@@ -22,18 +22,18 @@
                   <el-option v-for="(warehouse, index) in params.warehouses" :key="index" :value="warehouse.id" :label="warehouse.name" :disabled="warehouse.id === 7" />
 
                 </el-select>
+              </el-col>
+              <el-col :xs="24" :sm="12" :md="12">
 
                 <label for="">Select Product</label>
                 <el-select v-model="form.item_id" placeholder="Select Product" filterable class="span">
                   <el-option v-for="(item, index) in params.items" :key="index" :value="item.id" :label="item.name" />
 
                 </el-select>
-              </el-col>
-              <el-col :xs="24" :sm="12" :md="12">
-                <label for="">Batch No.</label>
+                <!-- <label for="">Batch No.</label>
                 <el-input v-model="form.batch_no" placeholder="Batch No." class="span" />
                 <label for="">Goods Received Number (GRN)</label>
-                <el-input v-model="form.goods_received_note" placeholder="GRN" class="span" />
+                <el-input v-model="form.goods_received_note" placeholder="GRN" class="span" /> -->
 
               </el-col>
             </el-row>
@@ -42,15 +42,15 @@
         <el-row :gutter="2" class="padded">
           <el-col>
             <div style="overflow: auto">
-              <label for="">Sub Batches</label>
+              <label for="">Add Batches</label>
               <table class="table table-binvoiceed">
                 <thead>
                   <tr>
                     <th />
-                    <th>Sub Batch No.</th>
+                    <th>Batch No.</th>
                     <th>Quantity</th>
+                    <th>Production Date</th>
                     <th>Expiry Date</th>
-                    <th>GRN</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -68,10 +68,10 @@
                       <el-input v-model="sub_batch.quantity" type="number" outline placeholder="Quantity" min="1" />
                     </td>
                     <td>
-                      <el-date-picker v-model="sub_batch.expiry_date" type="date" outline format="yyyy/MM/dd" value-format="yyyy-MM-dd" />
+                      <el-date-picker v-model="sub_batch.production_date" type="date" outline format="yyyy/MM/dd" value-format="yyyy-MM-dd" />
                     </td>
                     <td>
-                      <el-input v-model="sub_batch.goods_received_note" type="text" outline placeholder="GRN" />
+                      <el-date-picker v-model="sub_batch.expiry_date" type="date" outline format="yyyy/MM/dd" value-format="yyyy-MM-dd" />
                     </td>
                   </tr>
                   <tr v-if="fill_fields_error">
@@ -136,7 +136,7 @@ export default {
             quantity: '',
             batch_no: '',
             expiry_date: '',
-            goods_received_note: null,
+            production_date: '',
           },
         ],
 
@@ -152,7 +152,7 @@ export default {
             quantity: '',
             batch_no: '',
             expiry_date: '',
-            goods_received_note: null,
+            production_date: '',
           },
         ],
 
@@ -213,7 +213,7 @@ export default {
             quantity: '',
             batch_no: '',
             expiry_date: '',
-            goods_received_note: null,
+            production_date: '',
           }];
           app.$message({ message: 'New Product Added Successfully!!!', type: 'success' });
           app.itemsInStock.push(response.item_in_stock);

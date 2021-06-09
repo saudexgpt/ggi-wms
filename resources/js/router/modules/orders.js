@@ -7,7 +7,7 @@ const permissionRoutes = {
   alwaysShow: true, // will always show the root menu
   meta: {
     title: 'Orders',
-    icon: 'shopping',
+    icon: 'el-icon-s-order',
     permissions: ['view order'],
     // roles: ['admin', 'stock officer'],
   },

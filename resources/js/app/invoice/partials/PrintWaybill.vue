@@ -36,7 +36,7 @@
           <thead>
             <tr>
               <th>S/N</th>
-              <th>Invoice No.</th>
+              <!-- <th>Invoice No.</th> -->
               <!-- <th>Customer</th> -->
               <th>Product</th>
               <th>Quantity</th>
@@ -47,7 +47,7 @@
           <tbody>
             <tr v-for="(waybill_item, index) in waybill.waybill_items" :key="index">
               <td>{{ index + 1 }}</td>
-              <td>{{ waybill_item.invoice.invoice_number }}</td>
+              <!-- <td>{{ waybill_item.invoice.invoice_number }}</td> -->
               <td>{{ waybill_item.item.name }}</td>
               <!-- <td>{{ waybill_item.item.description }}</td> -->
               <td>{{ waybill_item.quantity+' '+waybill_item.type }}<br>

@@ -40,11 +40,11 @@
       </router-link>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <router-link :to="{name: 'Invoices'}">
+      <router-link :to="{name: 'Orders'}">
         <div class="small-box bg-red-gradient">
           <div class="inner">
             <h3>{{ dataSummary.pending_invoices_count }}</h3>
-            <p>Pending Invoices</p>
+            <p>Pending Orders</p>
           </div>
           <div class="icon">
             <i class="el-icon-s-order" />

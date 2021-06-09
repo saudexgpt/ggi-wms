@@ -16,12 +16,12 @@ class VehiclesController extends Controller
      */
     public function index(Request $request)
     {
-        $warehouse_id = $request->warehouse_id;
+        // $warehouse_id = $request->warehouse_id;
         $vehicles = Vehicle::with(['warehouse', 'vehicleType', 'vehicleDrivers.driver.user', 'expenses' => function ($q) {
             $q->orderBy('id', 'DESC');
         }, 'conditions' => function ($q) {
             $q->orderBy('id', 'DESC');
-        }])->where('warehouse_id', $warehouse_id)->get();
+        }])/*->where('warehouse_id', $warehouse_id)*/->get();
         return response()->json(compact('vehicles'), 200);
     }
 
@@ -49,7 +49,7 @@ class VehiclesController extends Controller
         $vehicle = Vehicle::where('plate_no', $plate_no)->first();
         if (!$vehicle) {
             $vehicle = new Vehicle();
-            $vehicle->warehouse_id = $request->warehouse_id;
+            // $vehicle->warehouse_id = $request->warehouse_id;
             $vehicle->vehicle_type_id = $request->vehicle_type_id;
             $vehicle->plate_no = $request->plate_no;
             $vehicle->vin = $request->vin;

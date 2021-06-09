@@ -65,17 +65,12 @@
         <!-- Table row -->
         <div class="row">
           <div class="col-xs-12">
-            <small class="pull-right no-print"> Confirmed By: {{ (invoice.confirmer) ? invoice.confirmer.name : 'Not Confirmed' }}</small>
+            <!-- <small class="pull-right no-print"> Confirmed By: {{ (invoice.confirmer) ? invoice.confirmer.name : 'Not Confirmed' }}</small> -->
             <legend>Invoice Products</legend>
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>
-                    <div v-if="invoice.confirmed_by === null && checkPermission(['audit confirm actions'])">
-                      Confirm Items
-                    </div>
-                    <div v-else>S/N</div>
-                  </th>
+                  <th>S/N</th>
                   <th>Product</th>
                   <!-- <th>Description</th> -->
                   <th>Quantity</th>
@@ -88,7 +83,7 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="(invoice_item, index) in invoice.invoice_items"
+                  v-for="(invoice_item, index) in invoice.waybill.waybill_items"
                   :key="index"
                 >
                   <td>

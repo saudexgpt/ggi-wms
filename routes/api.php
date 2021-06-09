@@ -125,6 +125,12 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
         $router->group(['prefix' => 'general'], function () use ($router) {
 
 
+            $router->get('customer-invoices', 'InvoicesController@fetchCustomerInvoice')->middleware('permission:update invoice');
+            $router->put('update-customer-invoice/{customer_invoice}', 'InvoicesController@updateCustomerInvoice')->middleware('permission:update invoice');
+
+
+            $router->get('waybill-invoice', 'InvoicesController@customerWaybillInvoice')->middleware('permission:view invoice');
+
             $router->get('/', 'InvoicesController@index')->middleware('permission:view invoice');
             $router->get('show/{invoice}', 'InvoicesController@show')->middleware('permission:view invoice');
 
