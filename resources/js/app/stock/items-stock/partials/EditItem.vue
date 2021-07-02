@@ -27,6 +27,8 @@
 
             </el-col>
             <el-col :xs="24" :sm="12" :md="12">
+              <label for="">Production Date</label>
+              <el-date-picker v-model="form.production_date" placeholder="Production Date" type="date" style="width: 100%;" class="span" format="yyyy/MM/dd" value-format="yyyy-MM-dd" />
               <label for="">Expiry Date</label>
               <el-date-picker v-model="form.expiry_date" placeholder="Expiry Date" type="date" style="width: 100%;" class="span" format="yyyy/MM/dd" value-format="yyyy-MM-dd" />
               <label for="">Quantity</label>
@@ -84,6 +86,7 @@ export default {
         item_id: '',
         quantity: '',
         expiry_date: '',
+        production_date: '',
         batch_no: '',
 
       },
@@ -98,7 +101,8 @@ export default {
     moment,
     editProduct() {
       const app = this;
-      if (app.form.quantity >= app.initial_stock) {
+      const itemInStock = app.itemInStock;
+      if (app.form.quantity >= app.initial_stock || (itemInStock.balance === app.initial_stock)) {
         const load = updateProduct.loaderShow();
         var form = app.form;
         form.expiry_date = app.moment(form.expiry_date).format('LLL');

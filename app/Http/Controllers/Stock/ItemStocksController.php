@@ -78,8 +78,8 @@ class ItemStocksController extends Controller
     public function show(ItemStockSubBatch $item_in_stock)
     {
         //
-        $item_in_stock = $item_in_stock->with(['warehouse', 'item', 'stocker', 'confirmer'])->find($item_in_stock->id);
-        return response()->json(compact('item_in_stock'), 200);
+        return $item_in_stock = $item_in_stock->with(['warehouse', 'item', 'stocker', 'confirmer'])->find($item_in_stock->id);
+        // return response()->json(compact('item_in_stock'), 200);
     }
 
     /**
@@ -110,8 +110,14 @@ class ItemStocksController extends Controller
             if ($item) {
                 $item_id = $item->id;
                 $quantity =  $data->QUANTITY;
-                $goods_received_note =  $data->GRN;
                 $expiry_date =  $data->EXPIRY_DATE;
+                $exp_month = date('m', strtotime($expiry_date));
+                $exp_year = date('Y', strtotime($expiry_date));
+                $exp_day = cal_days_in_month(CAL_GREGORIAN, $exp_month, $exp_year);
+                $production_date =  $data->PRODUCTION_DATE;
+                $prod_month = date('m', strtotime($production_date));
+                $prod_year = date('Y', strtotime($production_date));
+                $prod_day = cal_days_in_month(CAL_GREGORIAN, $prod_month, $prod_year);
                 $batch_no =  $data->BATCH_NO;
                 $sub_batch_no = $batch_no;
                 if (isset($data->SUB_BATCH_NO)) {
@@ -128,11 +134,8 @@ class ItemStocksController extends Controller
                 $item_stock_sub_batch->in_transit = 0; // initial values set to zero
                 $item_stock_sub_batch->supplied = 0;
                 $item_stock_sub_batch->balance = $quantity;
-                $item_stock_sub_batch->goods_received_note = $goods_received_note;
-                $month = date('m', strtotime($expiry_date));
-                $year = date('Y', strtotime($expiry_date));
-                $no_of_days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-                $item_stock_sub_batch->expiry_date = $year . '-' . $month . '-' . $no_of_days_in_month;
+                $item_stock_sub_batch->expiry_date = $exp_year . '-' . $exp_month . '-' . $exp_day;
+                $item_stock_sub_batch->production_date = $prod_year . '-' . $prod_month . '-' . $prod_day;
                 $item_stock_sub_batch->save();
 
                 $items_stocked[] = $this->show($item_stock_sub_batch);
@@ -203,7 +206,7 @@ class ItemStocksController extends Controller
             $item_stock_sub_batch = new ItemStockSubBatch();
             $item_stock_sub_batch->stocked_by = $user->id;
             $item_stock_sub_batch->warehouse_id = $request->warehouse_id;
-            $item_stock_sub_batch->item_id = $request->item_id;
+            $item_stock_sub_batch->item_id = $batch['item_id']; //$request->item_id;
             $item_stock_sub_batch->batch_no = $batch['batch_no']; //$request->batch_no;
             $item_stock_sub_batch->sub_batch_no = $batch['batch_no'];
             $item_stock_sub_batch->quantity = $batch['quantity'];
@@ -249,6 +252,7 @@ class ItemStocksController extends Controller
         $item_in_stock->item_id = $request->item_id;
         $item_in_stock->batch_no = $request->batch_no;
         $item_in_stock->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+        $item_in_stock->production_date = date('Y-m-d', strtotime($request->production_date));
         $item_in_stock->save();
 
         // log this event
@@ -256,7 +260,9 @@ class ItemStocksController extends Controller
         $description = $item_in_stock->item->name . " with batch number: ($item_in_stock->batch_no) was updated by " . $user->name;
         $roles = ['assistant admin', 'warehouse manager', 'warehouse auditor', 'stock officer'];
         $this->logUserActivity($title, $description, $roles);
-        return $this->show($item_in_stock);
+        $item_in_stock =  $this->show($item_in_stock);
+
+        return response()->json(compact('item_in_stock'), 200);
     }
 
 

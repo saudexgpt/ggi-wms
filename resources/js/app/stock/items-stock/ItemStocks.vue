@@ -70,7 +70,7 @@
                 {{ (row.balance - row.reserved_for_supply) }} {{ formatPackageType(row.item.package_type) }}
 
               </div>
-              <div slot="expiry_date" slot-scope="{row}" :class="'alert alert-'+ expiryFlag(moment(row.expiry_date).format('x'))">
+              <div slot="expiry_date" slot-scope="{row}" :class="expiryFlag(moment(row.expiry_date).format('x'))">
                 <span>
                   {{ moment(row.expiry_date).fromNow() }}
                 </span>
@@ -107,13 +107,13 @@
 
           </div>
         </el-tab-pane>
-        <el-tab-pane label="EXPIRED PRODUCTS" name="expired">
+        <el-tab-pane v-if="expired_products.length > 0" label="EXPIRED PRODUCTS" name="expired">
           <div class="box-header">
             <h4 class="box-title">{{ expired_title }}</h4>
 
           </div>
           <div class="box-body">
-            <div v-if="expired_products.length > 0" class="pull-left">
+            <div class="pull-left">
               <el-button :loading="downloadLoading" style="margin:0 0 20px 20px;" type="primary" icon="document" @click="handleDownload2">
                 Export Excel
               </el-button>
@@ -243,7 +243,7 @@ export default {
       in_warehouse: '',
       itemInStock: {},
       selected_row_index: '',
-      product_expiry_date_alert_in_months: 9, // defaults to 9 months
+      product_expiry_date_alert_in_months: 6, // defaults to 9 months
       downloadLoading: false,
       filename: 'Products in Stock',
       table_title: '',
@@ -371,18 +371,22 @@ export default {
       const product_expiry_date_alert = this.product_expiry_date_alert_in_months;
       const min_expiration = parseInt(product_expiry_date_alert * 30 * 24 * 60 * 60 * 1000); // we use 30 days for one month to calculate
       const today = parseInt(this.moment().valueOf()); // Unix Timestamp (miliseconds) 1.6.0+
+      if (parseInt(date) < today) {
+        // console.log(parseInt(date) - today);
+        return 'expired-bg'; // flag expiry date as red
+      }
       if (parseInt(date) - today <= min_expiration) {
         // console.log(parseInt(date) - today);
-        return 'danger'; // flag expiry date as red
+        return 'alert-bg'; // flag expiry date as red
       }
-      return 'success'; // flag expiry date as green
+      return 'okay-bg'; // flag expiry date as green
     },
     formatPackageType(type){
-      // var formated_type = type + 's';
-      // if (type === 'Box') {
-      //   formated_type = type + 'es';
-      // }
-      return type;
+      var formated_type = type + 's';
+      if (type === 'Box') {
+        formated_type = type + 'es';
+      }
+      return formated_type;
     },
     handleDownload() {
       this.downloadLoading = true;
@@ -478,5 +482,32 @@ export default {
 td {
   padding: 0px !important;
 }
-
+.alert-bg{
+		color: #fff;
+		padding: 10px;
+		display: inline-block;
+		border-radius: 5px;
+    -webkit-animation: blinkingBackground 1s infinite;  /* Safari 4+ */
+    -moz-animation: blinkingBackground 1s infinite;  /* Fx 5+ */
+    -o-animation: blinkingBackground 1s infinite;  /* Opera 12+ */
+    animation: blinkingBackground 1s infinite;  /* IE 10+, Fx 29+ */
+	}
+	@keyframes blinkingBackground{
+		0%, 79%		{ background-color: #33d45b;}
+		80%, 100%	{ background-color: #000000;}
+	}
+  .okay-bg{
+		color: #fff;
+		padding: 10px;
+		display: inline-block;
+		border-radius: 5px;
+		background-color: #33d45b;
+	}
+  .expired-bg{
+		color: #fff;
+		padding: 10px;
+		display: inline-block;
+		border-radius: 5px;
+		background-color: #000000;
+	}
 </style>
