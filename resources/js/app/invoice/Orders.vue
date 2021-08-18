@@ -7,7 +7,7 @@
         class="btn btn-default"
       >Create New Order</router-link>
       <el-row :gutter="10">
-        <el-col :xs="24" :sm="8" :md="8">
+        <!-- <el-col :xs="24" :sm="8" :md="8">
           <label for>Select Warehouse</label>
           <el-select
             v-model="form.warehouse_index"
@@ -23,7 +23,7 @@
               :label="warehouse.name"
             />
           </el-select>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="6" :md="6">
           <label for>Filter by:</label>
           <el-select
@@ -371,8 +371,8 @@ export default {
       }
       app.table_title =
         app.form.status.toUpperCase() +
-        ' Orders  in ' +
-        app.warehouses[param.warehouse_index].name +
+        ' Orders ' +
+        /* app.warehouses[param.warehouse_index].name +*/
         extra_tableTitle;
       fetchOrders
         .list(param)

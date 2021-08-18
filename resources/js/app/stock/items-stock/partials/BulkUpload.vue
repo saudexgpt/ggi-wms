@@ -115,7 +115,7 @@ export default {
             // app.itemsInStock.push(response.item_in_stock);
             // app.$emit('update', response);
             load.hide();
-            app.page.option = 'list';
+            // app.page.option = 'list';
           });
         // .catch(error => {
         //   load.hide();

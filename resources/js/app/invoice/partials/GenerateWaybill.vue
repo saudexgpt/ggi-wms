@@ -211,7 +211,7 @@
                 </el-form-item> -->
               </el-form>
             </el-row>
-            <el-row v-if="form.waybill_no" :gutter="2" class="padded">
+            <el-row v-if="form.waybill_no && quantity_for_supply > 0" :gutter="2" class="padded">
               <el-col :xs="24" :sm="6" :md="6">
                 <el-button
                   type="success"
@@ -272,6 +272,7 @@ export default {
       },
       loading: false,
       disabled: false,
+      quantity_for_supply: 0,
     };
   },
   created() {
@@ -293,6 +294,9 @@ export default {
     },
     fetchUndeliveredOrders(index) {
       const app = this;
+      app.invoices = [];
+      app.selected_invoice = [];
+      app.displayOrderitems();
       var form = app.form;
       const loader = unDeliveredOrders.loaderShow();
       unDeliveredOrders.list(form).then((response) => {
@@ -320,6 +324,7 @@ export default {
         invoice_ids.push(app.invoices[element].id);
       }
       // console.log(invoice_items);
+      var quantity_for_supply = 0;
       invoice_items.forEach((invoice_item) => {
         var total_batch_balance = 0;
         var supply_bal = invoice_item.quantity - invoice_item.quantity_supplied;
@@ -337,8 +342,10 @@ export default {
           invoice_item.supply_bal = total_batch_balance;
           invoice_item.quantity_for_supply = total_batch_balance;
         }
+        quantity_for_supply = invoice_item.quantity_for_supply;
         invoice_item.total_batch_balance = total_batch_balance;
       });
+      app.quantity_for_supply = quantity_for_supply;
       app.invoice_items = invoice_items;
       app.form.invoice_ids = invoice_ids;
       // app.loading = false;

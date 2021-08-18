@@ -373,7 +373,7 @@ class InvoicesController extends Controller
             $status = $request->status;
             $invoices = $invoiceQuery->with(['warehouse', 'waybillItems', 'customer.user', 'customer.type', 'confirmer', 'invoiceItems.item', 'histories' => function ($q) {
                 $q->orderBy('id', 'DESC');
-            }])->where(['warehouse_id' => $warehouse_id, 'status' => $status])->orderBy('updated_at', 'DESC')->paginate($limit);
+            }])->where([/*'warehouse_id' => $warehouse_id, */'status' => $status])->orderBy('updated_at', 'DESC')->paginate($limit);
         }
         if (isset($request->from, $request->to, $request->status) && $request->from != '' && $request->from != '' && $request->status != '') {
             $date_from = date('Y-m-d', strtotime($request->from)) . ' 00:00:00';
@@ -382,7 +382,7 @@ class InvoicesController extends Controller
             $panel = $request->panel;
             $invoices = $invoiceQuery->with(['warehouse', 'waybillItems', 'customer.user', 'customer.type', 'confirmer',  'invoiceItems.item', 'histories' => function ($q) {
                 $q->orderBy('id', 'DESC');
-            }])->where(['warehouse_id' => $warehouse_id, 'status' => $status])->where('created_at', '>=', $date_from)->where('created_at', '<=', $date_to)->orderBy('updated_at', 'DESC')->paginate($limit);
+            }])->where([/*'warehouse_id' => $warehouse_id,*/'status' => $status])->where('created_at', '>=', $date_from)->where('created_at', '<=', $date_to)->orderBy('updated_at', 'DESC')->paginate($limit);
         }
         return response()->json(compact('invoices'));
     }
@@ -404,7 +404,7 @@ class InvoicesController extends Controller
             $q->where('supply_status', '!=', 'Complete');
         }, 'invoiceItems.item.stocks' => function ($p) use ($warehouse_id) {
             $p->whereRaw('balance - reserved_for_supply > 0')->where('warehouse_id', $warehouse_id)->where('confirmed_by', '!=', null);
-        }])->where('warehouse_id', $warehouse_id)->where('full_waybill_generated', '0')->where('confirmed_by', '!=', null)->orderBy('id', 'DESC')->get();
+        }])/*->where('warehouse_id', $warehouse_id)*/->where('full_waybill_generated', '0')->where('confirmed_by', '!=', null)->orderBy('id', 'DESC')->get();
         return response()->json(compact('invoices', 'waybill_no'), 200);
     }
 
@@ -851,6 +851,8 @@ class InvoicesController extends Controller
             $batches = $invoice_item->batches;
 
             $invoice_item_update = InvoiceItem::find($invoice_item->id);
+            $invoice_item_update->warehouse_id = $warehouse_id;
+            $invoice_item_update->save();
             $original_quantity = $invoice_item_update->quantity;
             $quantity_supplied = $invoice_item_update->quantity_supplied;
             $for_supply = (int) $invoice_item->quantity_for_supply;

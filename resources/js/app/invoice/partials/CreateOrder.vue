@@ -49,7 +49,7 @@
                   class="span"
                   disabled
                 /> -->
-                <label for>Select Warehouse</label>
+                <!-- <label for>Select Warehouse</label>
                 <el-select
                   v-model="form.warehouse_id"
                   placeholder="Select Warehouse"
@@ -63,7 +63,7 @@
                     :value="warehouse.id"
                     :label="warehouse.name"
                   />
-                </el-select>
+                </el-select> -->
                 <label for>Order Date</label>
                 <el-date-picker
                   v-model="form.invoice_date"
@@ -312,10 +312,10 @@ export default {
       dialogFormVisible: false,
       userCreating: false,
       fill_fields_error: false,
-      show_product_list: false,
+      show_product_list: true,
       batches_of_items_in_stock: [],
       form: {
-        warehouse_id: '',
+        warehouse_id: 1,
         customer_id: '',
         invoice_number: '',
         status: 'pending',
