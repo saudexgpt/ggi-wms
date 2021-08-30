@@ -177,17 +177,17 @@ export default {
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
-        if (j === 'category.name') {
+        if (j === 'category') {
           return v['category']['name'];
-        } else {
-          if (j === 'price.sale_price') {
-            if (v['price']){
-              return v['price']['sale_price'];
-            } else {
-              return '0';
-            }
+        }
+        if (j === 'price.sale_price') {
+          if (v['price']){
+            return v['price']['sale_price'];
+          } else {
+            return '0';
           }
         }
+
         return v[j];
       }));
     },
