@@ -91,7 +91,7 @@
               <div slot="action" slot-scope="props">
                 <div v-if="props.row.is_warehouse_transfered === 0">
                   <a v-if="checkPermission(['manage item stocks', 'update item stocks'])" class="btn btn-primary" @click="itemInStock=props.row; selected_row_index=props.index; page.option = 'edit_item'"><i class="fa fa-edit" /> </a>
-                  <a v-if="checkPermission(['manage item stocks', 'delete item stocks']) && props.row.reserved_for_supply == 0 && props.row.in_transit == 0 && props.row.balance == 0" class="btn btn-danger" @click="confirmDelete(props.index, props)"><i class="fa fa-trash" /> </a>
+                  <a v-if="checkPermission(['manage item stocks', 'delete item stocks']) && props.row.reserved_for_supply == 0 && props.row.in_transit == 0 && props.row.supplied == 0" class="btn btn-danger" @click="confirmDelete(props.index, props)"><i class="fa fa-trash" /> </a>
 
                 </div>
                 <div v-else>

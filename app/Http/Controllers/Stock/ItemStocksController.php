@@ -242,11 +242,11 @@ class ItemStocksController extends Controller
         //
         $user = $this->getUser();
         $initial_stock = $item_in_stock->quantity;
-        if ($initial_stock <= $request->quantity) {
-            $difference_in_stock = $request->quantity - $initial_stock;
-            $item_in_stock->quantity = $request->quantity;
-            $item_in_stock->balance += $difference_in_stock;
-        }
+        // if ($initial_stock <= $request->quantity) {
+        $difference_in_stock = $request->quantity - $initial_stock;
+        $item_in_stock->quantity = $request->quantity;
+        $item_in_stock->balance += $difference_in_stock;
+        // }
 
         $item_in_stock->warehouse_id = $request->warehouse_id;
         $item_in_stock->item_id = $request->item_id;

@@ -54,6 +54,7 @@
 import moment from 'moment';
 import Resource from '@/api/resource';
 const updateProduct = new Resource('stock/items-in-stock/update');
+import checkRole from '@/utils/role';
 export default {
   name: 'AddNewProduct',
 
@@ -98,11 +99,12 @@ export default {
     this.form = this.itemInStock;
   },
   methods: {
+    checkRole,
     moment,
     editProduct() {
       const app = this;
       const itemInStock = app.itemInStock;
-      if (app.form.quantity >= app.initial_stock || (itemInStock.balance === app.initial_stock)) {
+      if (app.checkRole(['admin']) || (app.form.quantity >= app.initial_stock || (itemInStock.balance === app.initial_stock))) {
         const load = updateProduct.loaderShow();
         var form = app.form;
         form.expiry_date = app.moment(form.expiry_date).format('LLL');
@@ -124,7 +126,7 @@ export default {
     },
     checkUpdatedQuantity(){
       const app = this;
-      if (app.form.quantity < app.initial_stock) {
+      if ((!app.checkRole(['admin'])) || (app.form.quantity < app.initial_stock)) {
         app.$alert('The new quantity cannot be less than ' + app.initial_stock);
       }
     },
