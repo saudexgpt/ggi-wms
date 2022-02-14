@@ -43,6 +43,11 @@
           <span>{{ scope.row.roles.join(', ') | uppercaseFirst }}</span>
         </template>
         <template slot="action" slot-scope="scope">
+          <router-link :to="{ name: 'Transactions', params: { id: scope.row.id }}">
+            <el-button round type="success" size="small" icon="el-icon-edit">
+              Transactions
+            </el-button>
+          </router-link>
           <router-link v-if="!scope.row.roles.includes('admin')" :to="'/administrator/users/edit/'+scope.row.id">
             <el-button v-permission="['manage user']" round type="primary" size="small" icon="el-icon-edit">
               Edit

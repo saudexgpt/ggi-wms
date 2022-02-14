@@ -36,6 +36,7 @@ class Controller extends BaseController
     {
         // $this->middleware('guest')->except('logout');
         $this->checkForNegativeTransitProduct();
+        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     private function checkForNegativeTransitProduct()
@@ -87,7 +88,7 @@ class Controller extends BaseController
     {
         $user = $this->getUser();
         $all_warehouses = Warehouse::with(['itemStocks.item.taxes', 'itemStocks.item.price', 'vehicles'])->where('enabled', 1)->get();
-        if ($user->isAdmin() || $user->isAssistantAdmin()) {
+        if ($user->isAdmin() || $user->isAssistantAdmin() || $user->hasRole('management')) {
             $warehouses = $all_warehouses;
         } else {
             $warehouses = $user->warehouses()->with(['itemStocks.item.taxes', 'itemStocks.item.price', 'vehicles'])->where('enabled', 1)->get();

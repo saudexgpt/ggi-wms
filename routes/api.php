@@ -125,7 +125,7 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
         $router->group(['prefix' => 'general'], function () use ($router) {
 
 
-            $router->get('customer-invoices', 'InvoicesController@fetchCustomerInvoice')->middleware('permission:update invoice');
+            $router->get('customer-invoices', 'InvoicesController@fetchCustomerInvoice')->middleware('permission:view invoice');
             $router->put('update-customer-invoice/{customer_invoice}', 'InvoicesController@updateCustomerInvoice')->middleware('permission:update invoice');
 
 
@@ -168,6 +168,9 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
                 $router->put('update/{waybill_id}', 'InvoicesController@updateWaybill');
                 $router->put('change-status/{waybill}', 'InvoicesController@changeWaybillStatus');
             });
+        });
+        $router->group(['prefix' => 'transactions'], function () use ($router) {
+            $router->get('/customer/{user}', 'InvoicesController@customerTransactions');
         });
     });
     $router->group(['prefix' => 'transfers', 'namespace' => 'Transfers'], function () use ($router) {

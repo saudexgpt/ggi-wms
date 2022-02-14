@@ -95,6 +95,13 @@ const permissionRoutes = {
       },
       hidden: true,
     },
+    {
+      path: 'customer/transactions/:id(\\d+)',
+      component: () => import('@/app/invoice/CustomerTransactions'),
+      name: 'Transactions',
+      meta: { permissions: ['manage user'] },
+      hidden: true,
+    },
   ],
 };
 

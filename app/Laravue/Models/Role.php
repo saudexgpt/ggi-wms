@@ -38,4 +38,9 @@ class Role extends \Spatie\Permission\Models\Role
     {
         return $this->name === Acl::ROLE_ASSISTANT_ADMIN;
     }
+
+    public function isMereUser(): bool
+    {
+        return $this->name === Acl::ROLE_USER;
+    }
 }

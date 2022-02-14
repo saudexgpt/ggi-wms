@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Invoice;
 use App\Customer;
 use App\Driver;
 use App\Http\Controllers\Controller;
+use App\Laravue\Models\User;
 use App\Models\Invoice\CustomerInvoice;
 use App\Models\Invoice\DeliveryTrip;
 use App\Models\Invoice\DeliveryTripExpense;
@@ -1438,5 +1439,31 @@ class InvoicesController extends Controller
             $invoice_item->amount = $item->amount;
             $invoice_item->save();
         }
+    }
+
+    public function customerTransactions(User $user)
+    {
+        $customer = Customer::with('user')->where('user_id', $user->id)->first();
+        if ($customer) {
+
+            $transactions = Invoice::join('waybill_items', 'waybill_items.invoice_id', '=', 'invoices.id')
+
+                ->join('waybills', 'waybill_items.waybill_id', '=', 'waybills.id')
+                ->join('items', 'waybill_items.item_id', '=', 'items.id')
+                ->join('dispatched_products', 'dispatched_products.waybill_item_id', '=', 'waybill_items.id')
+                ->groupBy('dispatched_products.waybill_item_id')
+                ->where('invoices.customer_id', $customer->id)
+                ->select('invoices.invoice_number', 'items.name', 'items.package_type', 'waybills.waybill_no', 'dispatched_products.updated_at', 'dispatched_products.status', \DB::raw('SUM(dispatched_products.quantity_supplied) as quantity_supplied'))
+                ->get();
+
+            return response()->json(compact('transactions', 'customer'), 200);
+        }
+
+        return response()->json(['transactions' => [], 'customer' => $customer], 200);
+        // $dispatched_products = DispatchedProduct::join('waybill_items', 'dispatched_products.waybill_item_id', '=', 'waybill_items.id')
+        //     ->join('invoices', 'waybill_items.invoice_id', '=', 'invoices.id')
+        //     ->join('invoice_items', 'invoice_items.invoice_id', '=', 'invoices.id')
+        //     ->join('items', 'invoice_items.item_id', '=', 'items.id')
+        //     ->where('invoices.customer_id', $customer->id)->get();
     }
 }

@@ -87,15 +87,15 @@ class User extends Authenticatable
      * @param String
      * @return bool
      */
-    public function hasPermission($permission): bool
-    {
-        foreach ($this->roles as $role) {
-            if (in_array($permission, $role->permissions->toArray())) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // public function hasPermission($permission): bool
+    // {
+    //     foreach ($this->roles as $role) {
+    //         if (in_array($permission, $role->permissions->toArray())) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
     /**
      * @return bool
@@ -106,7 +106,6 @@ class User extends Authenticatable
             if ($role->isAdmin()) {
                 return true;
             }
-
         }
 
         return false;
@@ -115,6 +114,16 @@ class User extends Authenticatable
     {
         foreach ($this->roles as $role) {
             if ($role->isAssistantAdmin()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public function isMereUser(): bool
+    {
+        foreach ($this->roles as $role) {
+            if ($role->isMereUser()) {
                 return true;
             }
         }

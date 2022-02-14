@@ -32,10 +32,10 @@
 
       <!-- Table row -->
 
-      <div v-if="edit_ivoice">
+      <div v-if="edit_invoice">
         <a
           class="btn btn-danger"
-          @click="edit_ivoice = false"
+          @click="edit_invoice = false"
         >Cancel</a>
         <edit-invoice :waybill="waybill" />
       </div>
@@ -44,8 +44,9 @@
         <div v-if="waybill.status === 'delivered'" align="center">
           <span color="red">Invoice have been automatically generated. You can edit it should you have any discount for the customer. </span><br>
           <a
+            v-if="checkPermission(['update invoice'])"
             class="btn btn-primary"
-            @click="edit_ivoice = true"
+            @click="edit_invoice = true"
           > <i class="el-icon-edit" />Edit Invoice</a>
         </div>
         <div class="row">
@@ -316,7 +317,7 @@ export default {
       print_waybill: false,
       confirmed_items: [],
       activate_confirm_button: false,
-      edit_ivoice: false,
+      edit_invoice: false,
     };
   },
   mounted() {
